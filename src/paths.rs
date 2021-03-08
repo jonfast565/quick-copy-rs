@@ -120,6 +120,7 @@ fn normalize_path(path: String) -> String {
     normalized
 }
 
+#[derive(Clone)]
 pub struct PathParser {
     pub segment: Option<Box<PathSegment>>
 }
@@ -225,12 +226,13 @@ impl PathParser {
     }
 }
 
+#[derive(Clone)]
 pub struct FileInfoParser {
-    segment: Option<Box<PathSegment>>,
-    metadata: fs::Metadata,
-    is_file: bool,
-    is_unc_path: bool,
-    path: String
+    pub segment: Option<Box<PathSegment>>,
+    pub metadata: fs::Metadata,
+    pub is_file: bool,
+    pub is_unc_path: bool,
+    pub path: String
 }
 
 impl FileInfoParser {
@@ -260,24 +262,48 @@ impl FileInfoParser {
 }
 
 pub struct FileInfoParserAction {
-    source: FileInfoParser,
-    destination: FileInfoParser,
+    source: Option<FileInfoParser>,
+    destination: Option<FileInfoParser>,
     action_type: ActionType
 }
 
 impl FileInfoParserAction {
+    pub fn new(source: FileInfoParser, dest: FileInfoParser, t: ActionType) -> FileInfoParserAction {
+        FileInfoParserAction {
+            source: Some(source),
+            destination: Some(dest),
+            action_type: t
+        }
+    }
+
+    pub fn new_source(dest: FileInfoParser, t: ActionType) -> FileInfoParserAction {
+        FileInfoParserAction {
+            source: None,
+            destination: Some(dest),
+            action_type: t
+        }
+    }
+
+    pub fn new_destination(source: FileInfoParser, t: ActionType) -> FileInfoParserAction {
+        FileInfoParserAction {
+            source: Some(source),
+            destination: None,
+            action_type: t
+        }
+    }
+
     pub fn get_source_length(&self) -> usize {
-        self.source.path.len()
+        self.source.clone().unwrap().path.len()
     }
 
     pub fn get_destination_length(&self) -> usize {
-        self.destination.path.len()
+        self.destination.clone().unwrap().path.len()
     }
 
     pub fn get_destination_from_segment(&self, target_directory: String) -> String {
         let pp = PathParser::new(target_directory.clone());
         let fif = FileInfoParser::new(target_directory.clone(), target_directory.clone());
-        let _pp2 = pp.append_segment(self.source.segment.as_ref().unwrap().get_default_segment_string());
+        let _pp2 = pp.append_segment(self.source.clone().unwrap().segment.as_ref().unwrap().get_default_segment_string());
         let destination_segment = pp.segment.unwrap().get_default_segment_string();
         if fif.is_unc_path {
             return "\\\\".to_string() + &destination_segment;
