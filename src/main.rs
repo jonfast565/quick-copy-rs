@@ -1,6 +1,8 @@
 mod utilities;
 mod paths;
 mod files;
+mod change_detector;
+mod configuration;
 
 fn main() {
     println!("Hello, world!");

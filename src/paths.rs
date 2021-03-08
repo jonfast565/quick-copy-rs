@@ -1,6 +1,8 @@
+use std::path::Path;
 use std::collections::VecDeque;
 use itertools::Itertools;
 use itertools::EitherOrBoth::{Left, Right, Both};
+use std::fs;
 
 use crate::utilities;
 
@@ -28,7 +30,7 @@ pub struct PathSegment {
 }
 
 impl PathSegment {
-    fn get_remaining_segments(&self) -> Vec<PathSegment> {
+    pub fn get_remaining_segments(&self) -> Vec<PathSegment> {
         let current_segment = self;
         let mut results = Vec::<PathSegment>::new();
         results.push(current_segment.clone());
@@ -40,7 +42,7 @@ impl PathSegment {
         results
     }
 
-    fn get_segment_string(&self, separator: char) -> String {
+    pub fn get_segment_string(&self, separator: char) -> String {
         let remaining_segments = self.get_remaining_segments();
         let mut segment_string = String::new();
         for seg in remaining_segments {
@@ -51,7 +53,7 @@ impl PathSegment {
         segment_string
     }
 
-    fn get_default_segment_string(&self) -> String {
+    pub fn get_default_segment_string(&self) -> String {
         if cfg!(windows) {
             self.get_segment_string(WINDOWS_SPLITTER)
         } else if cfg!(unix) {
@@ -61,7 +63,7 @@ impl PathSegment {
         }
     }
 
-    fn get_segment_length(&self) -> usize {
+    pub fn get_segment_length(&self) -> usize {
         let segment_string = self.get_default_segment_string();
         let splitted : Vec<&str> = segment_string
             .split(SPLITTER)
@@ -69,7 +71,7 @@ impl PathSegment {
         splitted.len()
     }
 
-    fn contains_all_of_segment(&self, folder_segment: &PathSegment) -> bool {
+    pub fn contains_all_of_segment(&self, folder_segment: &PathSegment) -> bool {
         let str1 = self.get_segment_string(SPLITTER);
         let str2 = folder_segment.get_segment_string(SPLITTER);
         let split1 = str1.split(SPLITTER).collect::<Vec<&str>>();
@@ -91,7 +93,7 @@ impl PathSegment {
         false
     }
 
-    fn identical(&self, other_segment: &PathSegment) -> bool {
+    pub fn identical(&self, other_segment: &PathSegment) -> bool {
         let str1 = self.get_segment_string(SPLITTER);
         let str2 = other_segment.get_segment_string(SPLITTER);
         let split1 = str1.split(SPLITTER).collect::<Vec<&str>>();
@@ -119,11 +121,11 @@ fn normalize_path(path: String) -> String {
 }
 
 pub struct PathParser {
-    segment: Option<Box<PathSegment>>
+    pub segment: Option<Box<PathSegment>>
 }
 
 impl PathParser {
-    fn new(path: String) -> PathParser {
+    pub fn new(path: String) -> PathParser {
         PathParser::build_segments(path)
     }
 
@@ -220,5 +222,66 @@ impl PathParser {
         }
 
         Some(*initial_segment.unwrap())
+    }
+}
+
+pub struct FileInfoParser {
+    segment: Option<Box<PathSegment>>,
+    metadata: fs::Metadata,
+    is_file: bool,
+    is_unc_path: bool,
+    path: String
+}
+
+impl FileInfoParser {
+    pub fn new(path: String, base_directory: String) -> FileInfoParser {
+        let md = fs::metadata(&path).unwrap();
+        let base_parser = PathParser::new(base_directory.clone());
+        let path_buf = Path::new(&path);
+        let path_string = path_buf.canonicalize()
+            .unwrap()
+            .into_os_string()
+            .into_string()
+            .unwrap();
+        let sub_dir_parser = PathParser::new(path_string);
+        let seg = base_parser.get_differing_segment(sub_dir_parser);
+        FileInfoParser {
+            is_file: !md.is_dir(),
+            metadata: md,
+            segment: seg,
+            is_unc_path: utilities::path_is_unc(base_directory),
+            path: path
+        } 
+    }
+
+    pub fn get_path(&self) -> String {
+        self.path.clone()
+    }
+}
+
+pub struct FileInfoParserAction {
+    source: FileInfoParser,
+    destination: FileInfoParser,
+    action_type: ActionType
+}
+
+impl FileInfoParserAction {
+    pub fn get_source_length(&self) -> usize {
+        self.source.path.len()
+    }
+
+    pub fn get_destination_length(&self) -> usize {
+        self.destination.path.len()
+    }
+
+    pub fn get_destination_from_segment(&self, target_directory: String) -> String {
+        let pp = PathParser::new(target_directory.clone());
+        let fif = FileInfoParser::new(target_directory.clone(), target_directory.clone());
+        let _pp2 = pp.append_segment(self.source.segment.as_ref().unwrap().get_default_segment_string());
+        let destination_segment = pp.segment.unwrap().get_default_segment_string();
+        if fif.is_unc_path {
+            return "\\\\".to_string() + &destination_segment;
+        }
+        destination_segment
     }
 }
