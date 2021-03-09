@@ -40,6 +40,9 @@ impl ChangeDetector {
         let source_pp = PathParser::new(source_dir.clone());
         let dest_pp = PathParser::new(target_dir.clone());
 
+        //dbg!(&source_pp);
+        //dbg!(&dest_pp);
+
         if source_pp
             .segment
             .unwrap()
