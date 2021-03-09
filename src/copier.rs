@@ -49,6 +49,8 @@ impl Copier {
                     let dst = destination_segment;
 
                     if c.source.unwrap().is_file {
+                        // dbg!(&src);
+                        // dbg!(&dst);
                         fs::copy(src, &dst).unwrap();
                     } else {
                         fs::create_dir(dst).unwrap();

@@ -115,7 +115,7 @@ impl ChangeDetector {
             FileInfoParserAction::new_source(first.clone(), ActionType::Create))
             .collect::<Vec<FileInfoParserAction>>();
         let mut second_paths = in_second_only.clone().iter().map(|second| 
-            FileInfoParserAction::new_source(second.clone(), ActionType::Delete))
+            FileInfoParserAction::new_destination(second.clone(), ActionType::Delete))
             .collect::<Vec<FileInfoParserAction>>();
         
         actions.append(&mut first_paths);

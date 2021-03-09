@@ -7,14 +7,14 @@ use std::fs;
 
 use crate::utilities;
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub enum ActionType {
     Create,
     Update,
     Delete
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum MatchType<First, Second> {
     Match(First, Second),
     NoMatch(First, Second),
@@ -26,7 +26,7 @@ pub const WINDOWS_SPLITTER: char = '\\';
 pub const UNIX_SPLITTER: char = '/';
 pub const SPLITTER: char = '|';
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct PathSegment {
     name: String,
     next: Option<Box<PathSegment>>
@@ -131,7 +131,7 @@ fn normalize_path(path: String) -> String {
     normalized
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct PathParser {
     pub segment: Option<Box<PathSegment>>
 }
@@ -206,8 +206,12 @@ impl PathParser {
 
         let mut queue = VecDeque::<PathSegment>::new();
         while let Some(ref x) = segment {
+            dbg!(&segment);
             queue.push_back(*x.clone());
-            segment = Some(segment.unwrap().next.unwrap());
+            segment = match segment.unwrap().next {
+                Some(x) => Some(x),
+                None => None
+            };
         }
 
         if queue.len() > 0 {
@@ -237,7 +241,7 @@ impl PathParser {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct FileInfoParser {
     pub segment: Option<Box<PathSegment>>,
     pub metadata: fs::Metadata,
@@ -272,7 +276,7 @@ impl FileInfoParser {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct FileInfoParserAction {
     pub source: Option<FileInfoParser>,
     pub destination: Option<FileInfoParser>,
@@ -288,6 +292,8 @@ impl PartialEq for FileInfoParserAction {
 
 impl PartialOrd for FileInfoParserAction {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        dbg!(self);
+        dbg!(other);
         let self_seg_len = self.source.as_ref().unwrap().segment.as_ref().unwrap().get_segment_length();
         let other_seg_len = other.source.as_ref().unwrap().segment.as_ref().unwrap().get_segment_length();
         if self_seg_len > other_seg_len {
@@ -311,18 +317,18 @@ impl FileInfoParserAction {
         }
     }
 
-    pub fn new_source(dest: FileInfoParser, t: ActionType) -> FileInfoParserAction {
+    pub fn new_source(source: FileInfoParser, t: ActionType) -> FileInfoParserAction {
         FileInfoParserAction {
-            source: None,
-            destination: Some(dest),
+            source: Some(source),
+            destination: None,
             action_type: t
         }
     }
 
-    pub fn new_destination(source: FileInfoParser, t: ActionType) -> FileInfoParserAction {
+    pub fn new_destination(dest: FileInfoParser, t: ActionType) -> FileInfoParserAction {
         FileInfoParserAction {
-            source: Some(source),
-            destination: None,
+            source: None,
+            destination: Some(dest),
             action_type: t
         }
     }
