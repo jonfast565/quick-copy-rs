@@ -122,14 +122,6 @@ impl PathSegment {
     }
 }
 
-fn normalize_path(path: String) -> String {
-    let normalized = path
-        .replace(WINDOWS_SPLITTER, SPLITTER.to_string().as_str())
-        .replace(UNIX_SPLITTER, SPLITTER.to_string().as_str());
-    dbg!(&normalized);
-    normalized
-}
-
 #[derive(Clone, Debug)]
 pub struct PathParser {
     pub segment: Option<Box<PathSegment>>,
@@ -140,16 +132,24 @@ impl PathParser {
         PathParser::build_segments(path)
     }
 
-    fn build_segments(path: String) -> PathParser {
-        let mut normalized = normalize_path(path)
+    fn normalized_splitter(path: String) -> Vec<String> {
+        let fixed_string = path
+            .replace(WINDOWS_SPLITTER, SPLITTER.to_string().as_str())
+            .replace(UNIX_SPLITTER, SPLITTER.to_string().as_str());
+        let mut normalized = fixed_string
             .split(SPLITTER)
-            .filter(|x| x == &"" || x == &"?")
+            .filter(|x| !utilities::string_match_str(x, "") || !utilities::string_match_str(x, "?"))
             .map(String::from)
             .collect::<Vec<String>>();
         normalized.reverse();
+        normalized
+    }
 
+    fn build_segments(path: String) -> PathParser {
+        let normalized = PathParser::normalized_splitter(path);
         let mut next_segment: Option<Box<PathSegment>> = None;
 
+        dbg!(&normalized);
         for seg in normalized {
             let new_item = PathSegment {
                 name: seg,
@@ -167,8 +167,8 @@ impl PathParser {
         let other_segment_list = p.segment.as_ref().unwrap().get_remaining_segments();
         let my_segments = self.segment.as_ref().unwrap().get_remaining_segments();
 
-        dbg!(&my_segments);
-        dbg!(&other_segment_list);
+        //dbg!(&my_segments);
+        //dbg!(&other_segment_list);
 
         let zipped = my_segments.iter().zip_longest(other_segment_list);
         for zip in zipped {
@@ -201,6 +201,7 @@ impl PathParser {
         last.unwrap().next = segment_parser.segment;
         self
     }
+
     fn get_last(&self) -> Option<PathSegment> {
         let initial_segment = self.segment.clone();
         let mut segment = initial_segment.clone();
@@ -263,7 +264,7 @@ impl FileInfoParser {
             .unwrap();
         let sub_dir_parser = PathParser::new(path_string);
         let seg = base_parser.get_differing_segment(sub_dir_parser);
-        dbg!(&seg);
+        //dbg!(&seg);
         FileInfoParser {
             is_file: !md.is_dir(),
             metadata: md,

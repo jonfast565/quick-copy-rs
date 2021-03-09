@@ -2,6 +2,10 @@ pub fn string_match(needle: String, haystack: String) -> bool {
     let needle_lower = needle.to_lowercase();
     let haystack_lower = haystack.to_lowercase();
 
+    if needle_lower.len() == 0 && haystack_lower.len() == 0 {
+        return true;
+    }
+
     for _ in needle_lower.matches(haystack_lower.as_str()) {
         return true;
     }
