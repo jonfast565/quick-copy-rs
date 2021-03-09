@@ -2,7 +2,7 @@
 pub enum RuntimeType {
     Console,
     Service,
-    Batch
+    Batch,
 }
 
 #[derive(Clone)]
@@ -13,19 +13,19 @@ pub struct ProgramOptions {
     pub check_time: f64,
     pub enable_deletes: bool,
     pub skip_folders: Vec<String>,
-    pub use_config_file: bool
+    pub use_config_file: bool,
 }
 
 impl ProgramOptions {
     pub fn new_test() -> ProgramOptions {
-        ProgramOptions{
+        ProgramOptions {
             runtime: RuntimeType::Batch,
             source_directory: "C:\\Users\\jnfst\\Desktop\\Test1".to_string(),
             target_directory: "C:\\Users\\jnfst\\Desktop\\Test2".to_string(),
             check_time: 30000.00,
             enable_deletes: false,
-            skip_folders: vec!(),
-            use_config_file: false
+            skip_folders: vec![],
+            use_config_file: false,
         }
     }
 }

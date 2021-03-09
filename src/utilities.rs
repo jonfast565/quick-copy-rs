@@ -3,7 +3,7 @@ pub fn string_match(needle: String, haystack: String) -> bool {
     let haystack_lower = haystack.to_lowercase();
 
     for _ in needle_lower.matches(haystack_lower.as_str()) {
-        return true
+        return true;
     }
 
     false

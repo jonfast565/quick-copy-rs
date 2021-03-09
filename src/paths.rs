@@ -1,9 +1,9 @@
-use std::path::Path;
-use std::collections::VecDeque;
-use std::cmp::{Ordering};
+use itertools::EitherOrBoth::{Both, Left, Right};
 use itertools::Itertools;
-use itertools::EitherOrBoth::{Left, Right, Both};
+use std::cmp::Ordering;
+use std::collections::VecDeque;
 use std::fs;
+use std::path::Path;
 
 use crate::utilities;
 
@@ -11,7 +11,7 @@ use crate::utilities;
 pub enum ActionType {
     Create,
     Update,
-    Delete
+    Delete,
 }
 
 #[derive(Clone, Debug)]
@@ -19,7 +19,7 @@ pub enum MatchType<First, Second> {
     Match(First, Second),
     NoMatch(First, Second),
     OnlyOneLeft(First),
-    OnlyOneRight(Second)
+    OnlyOneRight(Second),
 }
 
 pub const WINDOWS_SPLITTER: char = '\\';
@@ -29,7 +29,7 @@ pub const SPLITTER: char = '|';
 #[derive(Clone, Debug)]
 pub struct PathSegment {
     name: String,
-    next: Option<Box<PathSegment>>
+    next: Option<Box<PathSegment>>,
 }
 
 impl PathSegment {
@@ -40,7 +40,10 @@ impl PathSegment {
         let mut seg_option = current_segment.next.as_ref();
         while let Some(i) = seg_option {
             results.push(*i.clone());
-            seg_option = i.next.as_ref();
+            seg_option = match &seg_option.unwrap().next {
+                Some(x) => Some(&x),
+                None => None,
+            };
         }
         results
     }
@@ -58,9 +61,7 @@ impl PathSegment {
 
     pub fn get_segments(&self) -> Vec<String> {
         let remaining_segments = self.get_remaining_segments();
-        let string_vec : Vec<String> = remaining_segments.iter()
-            .map(|x| x.name.clone())
-            .collect();
+        let string_vec: Vec<String> = remaining_segments.iter().map(|x| x.name.clone()).collect();
         string_vec
     }
 
@@ -76,9 +77,7 @@ impl PathSegment {
 
     pub fn get_segment_length(&self) -> usize {
         let segment_string = self.get_default_segment_string();
-        let splitted : Vec<&str> = segment_string
-            .split(SPLITTER)
-            .collect();
+        let splitted: Vec<&str> = segment_string.split(SPLITTER).collect();
         splitted.len()
     }
 
@@ -94,7 +93,7 @@ impl PathSegment {
                 split_ctr += 1;
 
                 if split_ctr == split2.len() {
-                    return true
+                    return true;
                 }
             } else {
                 split_ctr = 0;
@@ -116,24 +115,24 @@ impl PathSegment {
 
         for i in 0..split1.len() {
             if !utilities::string_match_str(split1[i], split2[i]) {
-                return false
+                return false;
             }
         }
-        
         true
     }
 }
 
 fn normalize_path(path: String) -> String {
     let normalized = path
-    .replace(WINDOWS_SPLITTER, SPLITTER.to_string().as_str())
-    .replace(UNIX_SPLITTER, SPLITTER.to_string().as_str());
+        .replace(WINDOWS_SPLITTER, SPLITTER.to_string().as_str())
+        .replace(UNIX_SPLITTER, SPLITTER.to_string().as_str());
+    dbg!(&normalized);
     normalized
 }
 
 #[derive(Clone, Debug)]
 pub struct PathParser {
-    pub segment: Option<Box<PathSegment>>
+    pub segment: Option<Box<PathSegment>>,
 }
 
 impl PathParser {
@@ -144,36 +143,39 @@ impl PathParser {
     fn build_segments(path: String) -> PathParser {
         let mut normalized = normalize_path(path)
             .split(SPLITTER)
+            .filter(|x| x == &"" || x == &"?")
             .map(String::from)
             .collect::<Vec<String>>();
         normalized.reverse();
 
-        let mut next_segment : Option<Box<PathSegment>> = None;
+        let mut next_segment: Option<Box<PathSegment>> = None;
 
         for seg in normalized {
             let new_item = PathSegment {
                 name: seg,
-                next: next_segment
+                next: next_segment,
             };
             next_segment = Some(Box::new(new_item));
         }
 
         PathParser {
-            segment: next_segment
+            segment: next_segment,
         }
     }
 
-    pub fn get_differing_segment(&self, p : PathParser) -> Option<Box<PathSegment>> {
+    pub fn get_differing_segment(&self, p: PathParser) -> Option<Box<PathSegment>> {
         let other_segment_list = p.segment.as_ref().unwrap().get_remaining_segments();
         let my_segments = self.segment.as_ref().unwrap().get_remaining_segments();
 
-        let zipped = my_segments.iter().zip_longest(other_segment_list);
+        dbg!(&my_segments);
+        dbg!(&other_segment_list);
 
+        let zipped = my_segments.iter().zip_longest(other_segment_list);
         for zip in zipped {
             let zip_val = match zip {
                 Left(x) => MatchType::OnlyOneLeft(x.clone()),
                 Right(x) => MatchType::OnlyOneRight(x.clone()),
-                Both(x,y) => {
+                Both(x, y) => {
                     if utilities::string_match_str(&x.name, &y.name) {
                         MatchType::Match(x.clone(), y.clone());
                     }
@@ -181,7 +183,7 @@ impl PathParser {
                 }
             };
 
-            if let MatchType::OnlyOneRight(x) = &zip_val { 
+            if let MatchType::OnlyOneRight(x) = &zip_val {
                 return Some(x.next.clone().unwrap());
             }
 
@@ -199,18 +201,16 @@ impl PathParser {
         last.unwrap().next = segment_parser.segment;
         self
     }
-    
     fn get_last(&self) -> Option<PathSegment> {
         let initial_segment = self.segment.clone();
         let mut segment = initial_segment.clone();
 
         let mut queue = VecDeque::<PathSegment>::new();
         while let Some(ref x) = segment {
-            dbg!(&segment);
             queue.push_back(*x.clone());
             segment = match segment.unwrap().next {
                 Some(x) => Some(x),
-                None => None
+                None => None,
             };
         }
 
@@ -247,7 +247,7 @@ pub struct FileInfoParser {
     pub metadata: fs::Metadata,
     pub is_file: bool,
     pub is_unc_path: bool,
-    pub path: String
+    pub path: String,
 }
 
 impl FileInfoParser {
@@ -255,20 +255,22 @@ impl FileInfoParser {
         let md = fs::metadata(&path).unwrap();
         let base_parser = PathParser::new(base_directory.clone());
         let path_buf = Path::new(&path);
-        let path_string = path_buf.canonicalize()
+        let path_string = path_buf
+            .canonicalize()
             .unwrap()
             .into_os_string()
             .into_string()
             .unwrap();
         let sub_dir_parser = PathParser::new(path_string);
         let seg = base_parser.get_differing_segment(sub_dir_parser);
+        dbg!(&seg);
         FileInfoParser {
             is_file: !md.is_dir(),
             metadata: md,
             segment: seg,
             is_unc_path: utilities::path_is_unc(base_directory),
-            path: path
-        } 
+            path: path,
+        }
     }
 
     pub fn get_path(&self) -> String {
@@ -280,22 +282,36 @@ impl FileInfoParser {
 pub struct FileInfoParserAction {
     pub source: Option<FileInfoParser>,
     pub destination: Option<FileInfoParser>,
-    pub action_type: ActionType
+    pub action_type: ActionType,
 }
 
 impl PartialEq for FileInfoParserAction {
     fn eq(&self, other: &Self) -> bool {
-        self.source.as_ref().unwrap().path == other.source.as_ref().unwrap().path 
-        && self.destination.as_ref().unwrap().path == other.destination.as_ref().unwrap().path
+        self.source.as_ref().unwrap().path == other.source.as_ref().unwrap().path
+            && self.destination.as_ref().unwrap().path == other.destination.as_ref().unwrap().path
     }
 }
 
 impl PartialOrd for FileInfoParserAction {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        dbg!(self);
-        dbg!(other);
-        let self_seg_len = self.source.as_ref().unwrap().segment.as_ref().unwrap().get_segment_length();
-        let other_seg_len = other.source.as_ref().unwrap().segment.as_ref().unwrap().get_segment_length();
+        //dbg!(self);
+        //dbg!(other);
+        let self_seg_len = self
+            .source
+            .as_ref()
+            .unwrap()
+            .segment
+            .as_ref()
+            .unwrap()
+            .get_segment_length();
+        let other_seg_len = other
+            .source
+            .as_ref()
+            .unwrap()
+            .segment
+            .as_ref()
+            .unwrap()
+            .get_segment_length();
         if self_seg_len > other_seg_len {
             return Some(Ordering::Greater);
         } else if self_seg_len < other_seg_len {
@@ -309,11 +325,15 @@ impl PartialOrd for FileInfoParserAction {
 }
 
 impl FileInfoParserAction {
-    pub fn new(source: FileInfoParser, dest: FileInfoParser, t: ActionType) -> FileInfoParserAction {
+    pub fn new(
+        source: FileInfoParser,
+        dest: FileInfoParser,
+        t: ActionType,
+    ) -> FileInfoParserAction {
         FileInfoParserAction {
             source: Some(source),
             destination: Some(dest),
-            action_type: t
+            action_type: t,
         }
     }
 
@@ -321,7 +341,7 @@ impl FileInfoParserAction {
         FileInfoParserAction {
             source: Some(source),
             destination: None,
-            action_type: t
+            action_type: t,
         }
     }
 
@@ -329,7 +349,7 @@ impl FileInfoParserAction {
         FileInfoParserAction {
             source: None,
             destination: Some(dest),
-            action_type: t
+            action_type: t,
         }
     }
 
@@ -344,8 +364,19 @@ impl FileInfoParserAction {
     pub fn get_destination_from_segment(&self, target_directory: String) -> String {
         let pp = PathParser::new(target_directory.clone());
         let fif = FileInfoParser::new(target_directory.clone(), target_directory.clone());
-        let _pp2 = pp.append_segment(self.source.clone().unwrap().segment.as_ref().unwrap().get_default_segment_string());
+        let segment_string = self
+            .source
+            .clone()
+            .unwrap()
+            .segment
+            .as_ref()
+            .unwrap()
+            .get_default_segment_string();
+        //dbg!(&segment_string);
+        let _pp2 = pp.append_segment(segment_string);
+        //dbg!(&_pp2.segment);
         let destination_segment = pp.segment.unwrap().get_default_segment_string();
+        //dbg!(&destination_segment);
         if fif.is_unc_path {
             return "\\\\".to_string() + &destination_segment;
         }

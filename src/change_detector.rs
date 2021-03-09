@@ -1,9 +1,9 @@
 use crate::configuration::ProgramOptions;
 use crate::files;
+use crate::paths::ActionType;
 use crate::paths::FileInfoParser;
 use crate::paths::FileInfoParserAction;
 use crate::paths::PathParser;
-use crate::paths::ActionType;
 use crate::utilities;
 
 use std::fs;
@@ -82,9 +82,12 @@ impl ChangeDetector {
         println!("Checking for created or updated files");
         for file1 in results1.clone() {
             let mut found_in_first_only = true;
-            let files_in_both = results2.clone().filter(|file2| utilities::string_match(
-                file1.segment.as_ref().unwrap().get_default_segment_string(), 
-                file2.segment.as_ref().unwrap().get_default_segment_string()));
+            let files_in_both = results2.clone().filter(|file2| {
+                utilities::string_match(
+                    file1.segment.as_ref().unwrap().get_default_segment_string(),
+                    file2.segment.as_ref().unwrap().get_default_segment_string(),
+                )
+            });
 
             for file2 in files_in_both {
                 in_both.push((file1.clone(), file2));
@@ -101,9 +104,12 @@ impl ChangeDetector {
         println!("Checking for deleted files");
         let mut in_second_only = Vec::<FileInfoParser>::new();
         for file2 in results2 {
-            let found_in_second_only = results1.clone().all(|file1| !utilities::string_match(
-                file1.segment.as_ref().unwrap().get_default_segment_string(), 
-                file2.segment.as_ref().unwrap().get_default_segment_string()));
+            let found_in_second_only = results1.clone().all(|file1| {
+                !utilities::string_match(
+                    file1.segment.as_ref().unwrap().get_default_segment_string(),
+                    file2.segment.as_ref().unwrap().get_default_segment_string(),
+                )
+            });
             if found_in_second_only {
                 in_second_only.push(file2);
             }
@@ -111,13 +117,16 @@ impl ChangeDetector {
 
         println!("Enumerating possible actions");
         let mut actions = Vec::<FileInfoParserAction>::new();
-        let mut first_paths = in_first_only.clone().iter().map(|first| 
-            FileInfoParserAction::new_source(first.clone(), ActionType::Create))
+        let mut first_paths = in_first_only
+            .clone()
+            .iter()
+            .map(|first| FileInfoParserAction::new_source(first.clone(), ActionType::Create))
             .collect::<Vec<FileInfoParserAction>>();
-        let mut second_paths = in_second_only.clone().iter().map(|second| 
-            FileInfoParserAction::new_destination(second.clone(), ActionType::Delete))
+        let mut second_paths = in_second_only
+            .clone()
+            .iter()
+            .map(|second| FileInfoParserAction::new_destination(second.clone(), ActionType::Delete))
             .collect::<Vec<FileInfoParserAction>>();
-        
         actions.append(&mut first_paths);
         actions.append(&mut second_paths);
 
@@ -130,7 +139,6 @@ impl ChangeDetector {
                 actions.push(FileInfoParserAction::new(first, second, ActionType::Update));
             }
         }
-        
         actions
     }
 }

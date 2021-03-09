@@ -1,9 +1,9 @@
-use crate::paths::{PathParser, FileInfoParserAction, ActionType};
 use crate::configuration::ProgramOptions;
+use crate::paths::{ActionType, FileInfoParserAction, PathParser};
 
-use std::fs;
-use std::cmp::{Ordering};
 use itertools::Itertools;
+use std::cmp::Ordering;
+use std::fs;
 
 pub struct Copier {
     program_options: ProgramOptions,
@@ -15,22 +15,27 @@ impl Copier {
     }
 
     pub fn incremental_copy(&self, actions: Vec<FileInfoParserAction>) {
-        let skip_folders = self.program_options.skip_folders.iter().map(|x| 
-            PathParser::new(x.clone())).collect::<Vec<PathParser>>();
-        
-        let ordered_creates = actions.clone()
+        let skip_folders = self
+            .program_options
+            .skip_folders
+            .iter()
+            .map(|x| PathParser::new(x.clone()))
+            .collect::<Vec<PathParser>>();
+
+        let ordered_creates = actions
+            .clone()
             .into_iter()
             .sorted_by(|a, b| a.partial_cmp(b).unwrap_or(Ordering::Equal))
             .filter(|x| x.action_type == ActionType::Create || x.action_type == ActionType::Update)
             .collect::<Vec<FileInfoParserAction>>();
 
-        let ordered_deletes = actions.clone()
+        let ordered_deletes = actions
+            .clone()
             .into_iter()
             .sorted_by(|a, b| a.partial_cmp(b).unwrap_or(Ordering::Equal))
             .filter(|x| x.action_type == ActionType::Delete)
             .rev()
             .collect::<Vec<FileInfoParserAction>>();
-        
         for c in ordered_creates {
             match c.action_type {
                 ActionType::Create => {
@@ -39,7 +44,13 @@ impl Copier {
                     let destination_segment = c.get_destination_from_segment(dest_dir);
                     for s in &skip_folders {
                         let skip_segment = s.segment.as_ref().unwrap().get_default_segment_string();
-                        if source.unwrap().segment.as_ref().unwrap().contains_all_of_segment(&s.segment.as_ref().unwrap()) {
+                        if source
+                            .unwrap()
+                            .segment
+                            .as_ref()
+                            .unwrap()
+                            .contains_all_of_segment(&s.segment.as_ref().unwrap())
+                        {
                             let source_path = &source.unwrap().get_path();
                             println!("Skipped {} because {} skipped.", source_path, skip_segment);
                         }
@@ -49,18 +60,25 @@ impl Copier {
                     let dst = destination_segment;
 
                     if c.source.unwrap().is_file {
-                        dbg!(&src);
-                        dbg!(&dst);
-                        fs::copy(src, &dst).unwrap();
+                        //dbg!(&src);
+                        //dbg!(&dst);
+                        fs::copy(src, dst).unwrap();
                     } else {
                         fs::create_dir(dst).unwrap();
                     }
-                },
+                }
                 ActionType::Update => {
                     let source = c.source.as_ref();
+
                     for s in &skip_folders {
                         let skip_segment = s.segment.as_ref().unwrap().get_default_segment_string();
-                        if source.unwrap().segment.as_ref().unwrap().contains_all_of_segment(&s.segment.as_ref().unwrap()) {
+                        if source
+                            .unwrap()
+                            .segment
+                            .as_ref()
+                            .unwrap()
+                            .contains_all_of_segment(&s.segment.as_ref().unwrap())
+                        {
                             let source_path = source.unwrap().get_path();
                             println!("Skipped {} because {} skipped.", source_path, skip_segment);
                         }
@@ -75,7 +93,7 @@ impl Copier {
                     } else {
                         fs::create_dir(dst).unwrap();
                     }
-                },
+                }
                 ActionType::Delete => {
                     println!("Nothing to do.");
                 }
@@ -86,10 +104,10 @@ impl Copier {
             match d.action_type {
                 ActionType::Create => {
                     println!("Nothing to do.")
-                },
+                }
                 ActionType::Update => {
                     println!("Nothing to do.");
-                },
+                }
                 ActionType::Delete => {
                     if self.program_options.enable_deletes {
                         let destination = d.destination.as_ref();
@@ -104,7 +122,7 @@ impl Copier {
                         println!("Deleted suppressed by config");
                         break;
                     }
-                }                
+                }
             }
         }
     }

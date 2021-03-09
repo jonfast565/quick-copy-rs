@@ -1,12 +1,12 @@
 #![allow(dead_code)]
 
-mod header;
-mod utilities;
-mod paths;
-mod files;
 mod change_detector;
 mod configuration;
 mod copier;
+mod files;
+mod header;
+mod paths;
+mod utilities;
 
 fn main() {
     println!("{}", header::get_header());
