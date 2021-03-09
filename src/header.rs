@@ -13,5 +13,10 @@ const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 const AUTHOR: &'static str = "Jon Fast";
 
 pub fn get_header() -> String {
-    String::from(HEADER.to_owned() + "\n" + SEPARATOR + "\n" + "Version: " + VERSION + "\n" + "Author: " + AUTHOR + "\n" + SEPARATOR)
+    String::from(
+        HEADER.to_owned() + "\n" + 
+        SEPARATOR + "\n" + 
+        "Version: " + VERSION + "\n" + 
+        "Author: " + AUTHOR + "\n" + 
+    SEPARATOR)
 }

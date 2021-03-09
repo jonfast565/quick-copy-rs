@@ -23,8 +23,8 @@ impl ProgramOptions {
             source_directory: "C:\\Users\\jnfst\\Desktop\\Test1".to_string(),
             target_directory: "C:\\Users\\jnfst\\Desktop\\Test2".to_string(),
             check_time: 30000.00,
-            enable_deletes: true,
-            skip_folders: vec!("Logs".to_string()),
+            enable_deletes: false,
+            skip_folders: vec!(),
             use_config_file: false
         }
     }
