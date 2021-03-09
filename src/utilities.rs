@@ -1,8 +1,8 @@
 pub fn string_match(needle: String, haystack: String) -> bool {
     let needle_lower = needle.to_lowercase();
-    let haystack_lower = needle.to_lowercase();
+    let haystack_lower = haystack.to_lowercase();
 
-    for i in needle_lower.matches(haystack_lower.as_str()) {
+    for _ in needle_lower.matches(haystack_lower.as_str()) {
         return true
     }
 
@@ -15,7 +15,7 @@ pub fn string_match_str(needle: &str, haystack: &str) -> bool {
 
 pub fn char_match(needle: char, haystack: char) -> bool {
     let needle_lower = needle.to_lowercase().collect::<Vec<char>>();
-    let haystack_lower = needle.to_lowercase().collect::<Vec<char>>();
+    let haystack_lower = haystack.to_lowercase().collect::<Vec<char>>();
 
     haystack_lower[0] == needle_lower[0]
 }

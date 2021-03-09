@@ -18,6 +18,7 @@ impl ChangeDetector {
         ChangeDetector { program_options: o }
     }
 
+    #[warn()]
     pub fn changed(&self) -> bool {
         println!("Checking for changes...");
         let merge = self.three_way_merge();
@@ -26,7 +27,8 @@ impl ChangeDetector {
 
     pub fn incremental_changes(&self) -> Vec<FileInfoParserAction> {
         println!("Checking for changes...");
-        Vec::<FileInfoParserAction>::new()
+        let merge = self.three_way_merge();
+        merge
     }
 
     pub fn three_way_merge(&self) -> Vec<FileInfoParserAction> {

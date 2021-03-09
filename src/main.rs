@@ -1,3 +1,6 @@
+#![allow(dead_code)]
+
+mod header;
 mod utilities;
 mod paths;
 mod files;
@@ -6,7 +9,7 @@ mod configuration;
 mod copier;
 
 fn main() {
-    println!("Hello, world!");
+    println!("{}", header::get_header());
 
     let program_options = configuration::ProgramOptions::new_test();
     let change_detector = change_detector::ChangeDetector::new(program_options.clone());

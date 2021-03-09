@@ -2,7 +2,6 @@ use crate::paths::{PathParser, FileInfoParserAction, ActionType};
 use crate::configuration::ProgramOptions;
 
 use std::cmp::{Ordering};
-
 use itertools::Itertools;
 
 pub struct Copier {
@@ -32,11 +31,25 @@ impl Copier {
             .collect::<Vec<FileInfoParserAction>>();
         
         for c in ordered_creates {
+            for s in skip_folders {
 
+            }
+            match c.action_type {
+                ActionType::Create => (),
+                ActionType::Update => (),
+                ActionType::Delete => ()
+            }
         }
 
         for d in ordered_deletes {
-            
+            for s in skip_folders {
+                
+            }
+            match d.action_type {
+                ActionType::Create => (),
+                ActionType::Update => (),
+                ActionType::Delete => ()                
+            }
         }
     }
 }
