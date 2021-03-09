@@ -1,17 +1,20 @@
 use std::path::Path;
 use std::collections::VecDeque;
+use std::cmp::{Ordering};
 use itertools::Itertools;
 use itertools::EitherOrBoth::{Left, Right, Both};
 use std::fs;
 
 use crate::utilities;
 
+#[derive(Clone, PartialEq, Eq)]
 pub enum ActionType {
     Create,
     Update,
     Delete
 }
 
+#[derive(Clone)]
 pub enum MatchType<First, Second> {
     Match(First, Second),
     NoMatch(First, Second),
@@ -51,6 +54,14 @@ impl PathSegment {
         }
         segment_string.pop();
         segment_string
+    }
+
+    pub fn get_segments(&self) -> Vec<String> {
+        let remaining_segments = self.get_remaining_segments();
+        let string_vec : Vec<String> = remaining_segments.iter()
+            .map(|x| x.name.clone())
+            .collect();
+        string_vec
     }
 
     pub fn get_default_segment_string(&self) -> String {
@@ -261,10 +272,34 @@ impl FileInfoParser {
     }
 }
 
+#[derive(Clone)]
 pub struct FileInfoParserAction {
-    source: Option<FileInfoParser>,
-    destination: Option<FileInfoParser>,
-    action_type: ActionType
+    pub source: Option<FileInfoParser>,
+    pub destination: Option<FileInfoParser>,
+    pub action_type: ActionType
+}
+
+impl PartialEq for FileInfoParserAction {
+    fn eq(&self, other: &Self) -> bool {
+        self.source.as_ref().unwrap().path == other.source.as_ref().unwrap().path 
+        && self.destination.as_ref().unwrap().path == other.destination.as_ref().unwrap().path
+    }
+}
+
+impl PartialOrd for FileInfoParserAction {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        let self_seg_len = self.source.as_ref().unwrap().segment.as_ref().unwrap().get_segment_length();
+        let other_seg_len = other.source.as_ref().unwrap().segment.as_ref().unwrap().get_segment_length();
+        if self_seg_len > other_seg_len {
+            return Some(Ordering::Greater);
+        } else if self_seg_len < other_seg_len {
+            return Some(Ordering::Less);
+        } else if self_seg_len == other_seg_len {
+            return Some(Ordering::Equal);
+        } else {
+            return None;
+        }
+    }
 }
 
 impl FileInfoParserAction {
