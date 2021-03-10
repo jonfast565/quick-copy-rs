@@ -20,8 +20,8 @@ impl ProgramOptions {
     pub fn new_test() -> ProgramOptions {
         ProgramOptions {
             runtime: RuntimeType::Batch,
-            source_directory: "C:\\Users\\jnfst\\Desktop\\Test1".to_string(),
-            target_directory: "C:\\Users\\jnfst\\Desktop\\Test2".to_string(),
+            source_directory: "C:\\Users\\jfast\\OneDrive - American College of Cardiology\\Desktop\\Test1".to_string(),
+            target_directory: "C:\\Users\\jfast\\OneDrive - American College of Cardiology\\Desktop\\Test2".to_string(),
             check_time: 30000.00,
             enable_deletes: false,
             skip_folders: vec![],

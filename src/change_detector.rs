@@ -53,13 +53,13 @@ impl ChangeDetector {
 
         let source_dir_path = Path::new(&source_dir);
         if !source_dir_path.exists() {
-            println!("Source doesn't exist; creating it.");
+            println!("Source dir doesn't exist; creating it.");
             fs::create_dir(source_dir_path).unwrap();
         }
 
         let target_dir_path = Path::new(&target_dir);
         if !target_dir_path.exists() {
-            println!("Directory doesn't exist; creating it.");
+            println!("Target dir doesn't exist; creating it.");
             fs::create_dir(target_dir_path).unwrap();
         }
 
