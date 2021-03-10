@@ -20,18 +20,24 @@ pub fn enumerate_files(path: &str) -> io::Result<Vec<String>> {
     Ok(result)
 }
 
-fn visit_dirs(dir: &Path) -> io::Result<Vec<String>> {
-    let result = Vec::<String>::new();
+pub fn visit_all(dir: &Path) -> io::Result<Vec<String>> {
+    let mut result = Vec::<String>::new();
     for entry in fs::read_dir(dir)? {
         let entry = entry?;
         let path = entry.path();
-        if path.is_dir() {
-            result.push(path.into_os_string().to_string());
-            let results = visit_dirs(&path)?;
+        if path.is_dir() && dir != path {
+            let cur_path = path.into_os_string().into_string().unwrap();
+            result.push(cur_path.clone());
+            let mut results = visit_all(Path::new(&cur_path))?;
             result.append(&mut results);
         } else {
-            result.push(path.to_string());
+            result.push(path.into_os_string().into_string().unwrap());
         }
     }
-    Ok(())
+
+    for e in result.clone() {
+        println!("{}", e);
+    }
+
+    Ok(result)
 }

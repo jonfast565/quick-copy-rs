@@ -67,13 +67,13 @@ impl ChangeDetector {
             fs::create_dir(target_dir_path).unwrap();
         }
 
-        let files1 = files::enumerate_files(&source_dir).unwrap();
+        let files1 = files::visit_all(Path::new(&source_dir)).unwrap();
         let results1 = files1
             .iter()
             .map(|x| FileInfoParser::new(x, &source_dir));
         println!("{} item(s) found in source", &files1.len());
 
-        let files2 = files::enumerate_files(&target_dir).unwrap();
+        let files2 = files::visit_all(Path::new(&target_dir)).unwrap();
         let results2 = files2
             .iter()
             .map(|x| FileInfoParser::new(x, &target_dir));
