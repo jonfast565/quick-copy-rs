@@ -61,10 +61,10 @@ impl Copier {
                     let dst = destination_segment;
 
                     if c.source.unwrap().is_file {
-                        //dbg!(&src);
-                        //dbg!(&dst);
+                        println!("Copying {} to {}", &src, &dst);
                         fs::copy(src, dst).unwrap();
                     } else {
+                        println!("Creating dir {}", &dst);
                         fs::create_dir(dst).unwrap();
                     }
                 }
@@ -89,9 +89,10 @@ impl Copier {
                     let dst = c.destination.unwrap().get_path();
 
                     if c.source.unwrap().is_file {
+                        println!("Copying {} to {}", &src, &dst);
                         fs::copy(&src, dst).unwrap();
-                        println!("Copied {} (changed)", src);
                     } else {
+                        println!("Creating dir {}", &dst);
                         fs::create_dir(dst).unwrap();
                     }
                 }
@@ -115,8 +116,10 @@ impl Copier {
                         let destination_path = destination.unwrap().get_path();
                         let file = destination.unwrap().is_file;
                         if file {
+                            println!("Remove file {}", &destination_path);
                             fs::remove_file(destination_path).unwrap();
                         } else {
+                            println!("Remove directory {}", &destination_path);
                             fs::remove_dir(destination_path).unwrap();
                         }
                     } else {

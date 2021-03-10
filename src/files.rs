@@ -1,4 +1,5 @@
 use std::{fs, io};
+use std::path::Path;
 
 pub fn enumerate_files(path: &str) -> io::Result<Vec<String>> {
     let mut entries = fs::read_dir(path)?
@@ -17,4 +18,20 @@ pub fn enumerate_files(path: &str) -> io::Result<Vec<String>> {
         .collect::<Vec<String>>();
 
     Ok(result)
+}
+
+fn visit_dirs(dir: &Path) -> io::Result<Vec<String>> {
+    let result = Vec::<String>::new();
+    for entry in fs::read_dir(dir)? {
+        let entry = entry?;
+        let path = entry.path();
+        if path.is_dir() {
+            result.push(path.into_os_string().to_string());
+            let results = visit_dirs(&path)?;
+            result.append(&mut results);
+        } else {
+            result.push(path.to_string());
+        }
+    }
+    Ok(())
 }
