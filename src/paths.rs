@@ -124,7 +124,7 @@ impl PathSegment {
 
 #[derive(Clone, Debug)]
 pub struct PathParser {
-    pub segment: Option<Box<PathSegment>>,
+    segment: Option<Box<PathSegment>>,
 }
 
 impl PathParser {
@@ -251,6 +251,11 @@ impl PathParser {
         }
 
         Some(*initial_segment.unwrap())
+    }
+
+    pub fn get_segment(&self) -> Box<PathSegment> {
+        let unwrapped_segment = self.segment.as_ref().unwrap();
+        unwrapped_segment.clone()
     }
 }
 

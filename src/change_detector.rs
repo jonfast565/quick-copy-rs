@@ -34,8 +34,8 @@ impl ChangeDetector {
     pub fn three_way_merge(&self) -> Vec<FileInfoParserAction> {
         println!("Merging...");
 
-        let source_dir = self.program_options.source_directory.clone();
-        let target_dir = self.program_options.target_directory.clone();
+        let source_dir = self.program_options.get_source_directory();
+        let target_dir = self.program_options.get_target_directory();
 
         let source_pp = PathParser::new(&source_dir);
         let dest_pp = PathParser::new(&target_dir);
@@ -43,10 +43,8 @@ impl ChangeDetector {
         //dbg!(&source_pp);
         //dbg!(&dest_pp);
 
-        if source_pp
-            .segment
-            .unwrap()
-            .identical(&dest_pp.segment.unwrap())
+        if source_pp.get_segment()
+            .identical(&dest_pp.get_segment())
         {
             println!(
                 "Source and destination paths are identical. 

@@ -17,7 +17,7 @@ impl Copier {
     pub fn incremental_copy(&self, actions: Vec<FileInfoParserAction>) {
         let skip_folders = self
             .program_options
-            .skip_folders
+            .get_skip_folders()
             .iter()
             .map(|x| PathParser::new(x))
             .collect::<Vec<PathParser>>();
@@ -36,21 +36,22 @@ impl Copier {
             .filter(|x| x.action_type == ActionType::Delete)
             .rev()
             .collect::<Vec<FileInfoParserAction>>();
+
         for c in ordered_creates {
             match c.action_type {
                 ActionType::Create => {
                     let source = c.source.as_ref();
                     // let source_dir = self.program_options.source_directory.clone();
-                    let dest_dir = self.program_options.target_directory.clone();
+                    let dest_dir = self.program_options.get_target_directory();
                     let destination_segment = c.get_destination_from_segment(&dest_dir);
                     for s in &skip_folders {
-                        let skip_segment = s.segment.as_ref().unwrap().get_default_segment_string();
+                        let skip_segment = s.get_segment().get_default_segment_string();
                         if source
                             .unwrap()
                             .segment
                             .as_ref()
                             .unwrap()
-                            .contains_all_of_segment(&s.segment.as_ref().unwrap())
+                            .contains_all_of_segment(&s.get_segment())
                         {
                             let source_path = &source.unwrap().get_path();
                             println!("Skipped {} because {} skipped.", source_path, skip_segment);
@@ -72,13 +73,13 @@ impl Copier {
                     let source = c.source.as_ref();
 
                     for s in &skip_folders {
-                        let skip_segment = s.segment.as_ref().unwrap().get_default_segment_string();
+                        let skip_segment = s.get_segment().get_default_segment_string();
                         if source
                             .unwrap()
                             .segment
                             .as_ref()
                             .unwrap()
-                            .contains_all_of_segment(&s.segment.as_ref().unwrap())
+                            .contains_all_of_segment(&s.get_segment())
                         {
                             let source_path = source.unwrap().get_path();
                             println!("Skipped {} because {} skipped.", source_path, skip_segment);

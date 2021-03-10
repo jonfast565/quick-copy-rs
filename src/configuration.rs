@@ -8,8 +8,8 @@ pub enum RuntimeType {
 #[derive(Clone)]
 pub struct ProgramOptions {
     pub runtime: RuntimeType,
-    pub source_directory: String,
-    pub target_directory: String,
+    source_directory: String,
+    target_directory: String,
     pub check_time: f64,
     pub enable_deletes: bool,
     pub skip_folders: Vec<String>,
@@ -27,5 +27,17 @@ impl ProgramOptions {
             skip_folders: vec![],
             use_config_file: false,
         }
+    }
+
+    pub fn get_source_directory(&self) -> String {
+        self.source_directory.clone()
+    }
+
+    pub fn get_target_directory(&self) -> String {
+        self.target_directory.clone()
+    }
+
+    pub fn get_skip_folders(&self) -> Vec<String> {
+        self.skip_folders.clone()
     }
 }
