@@ -85,8 +85,8 @@ impl ChangeDetector {
             let mut found_in_first_only = true;
             let files_in_both = results2.clone().filter(|file2| {
                 utilities::string_match(
-                    file1.segment.as_ref().unwrap().get_default_segment_string(),
-                    file2.segment.as_ref().unwrap().get_default_segment_string(),
+                    file1.get_segment().get_default_segment_string(),
+                    file2.get_segment().get_default_segment_string(),
                 )
             });
 
@@ -107,8 +107,8 @@ impl ChangeDetector {
         for file2 in results2 {
             let found_in_second_only = results1.clone().all(|file1| {
                 !utilities::string_match(
-                    file1.segment.as_ref().unwrap().get_default_segment_string(),
-                    file2.segment.as_ref().unwrap().get_default_segment_string(),
+                    file1.get_segment().get_default_segment_string(),
+                    file2.get_segment().get_default_segment_string(),
                 )
             });
             if found_in_second_only {

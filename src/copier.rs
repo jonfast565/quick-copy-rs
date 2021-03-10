@@ -48,9 +48,7 @@ impl Copier {
                         let skip_segment = s.get_segment().get_default_segment_string();
                         if source
                             .unwrap()
-                            .segment
-                            .as_ref()
-                            .unwrap()
+                            .get_segment()
                             .contains_all_of_segment(&s.get_segment())
                         {
                             let source_path = &source.unwrap().get_path();
@@ -76,9 +74,7 @@ impl Copier {
                         let skip_segment = s.get_segment().get_default_segment_string();
                         if source
                             .unwrap()
-                            .segment
-                            .as_ref()
-                            .unwrap()
+                            .get_segment()
                             .contains_all_of_segment(&s.get_segment())
                         {
                             let source_path = source.unwrap().get_path();

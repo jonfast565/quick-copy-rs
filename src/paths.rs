@@ -261,7 +261,7 @@ impl PathParser {
 
 #[derive(Clone, Debug)]
 pub struct FileInfoParser {
-    pub segment: Option<Box<PathSegment>>,
+    segment: Option<Box<PathSegment>>,
     pub metadata: fs::Metadata,
     pub is_file: bool,
     pub is_unc_path: bool,
@@ -288,6 +288,11 @@ impl FileInfoParser {
 
     pub fn get_path(&self) -> String {
         self.path.clone()
+    }
+
+    pub fn get_segment(&self) -> Box<PathSegment> {
+        let unwrapped_segment = self.segment.as_ref().unwrap();
+        unwrapped_segment.clone()
     }
 }
 
