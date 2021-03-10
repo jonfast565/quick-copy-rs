@@ -19,7 +19,7 @@ impl Copier {
             .program_options
             .skip_folders
             .iter()
-            .map(|x| PathParser::new(x.clone()))
+            .map(|x| PathParser::new(x))
             .collect::<Vec<PathParser>>();
 
         let ordered_creates = actions
@@ -40,8 +40,9 @@ impl Copier {
             match c.action_type {
                 ActionType::Create => {
                     let source = c.source.as_ref();
+                    // let source_dir = self.program_options.source_directory.clone();
                     let dest_dir = self.program_options.target_directory.clone();
-                    let destination_segment = c.get_destination_from_segment(dest_dir);
+                    let destination_segment = c.get_destination_from_segment(&dest_dir);
                     for s in &skip_folders {
                         let skip_segment = s.segment.as_ref().unwrap().get_default_segment_string();
                         if source

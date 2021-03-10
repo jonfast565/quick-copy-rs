@@ -37,8 +37,8 @@ impl ChangeDetector {
         let source_dir = self.program_options.source_directory.clone();
         let target_dir = self.program_options.target_directory.clone();
 
-        let source_pp = PathParser::new(source_dir.clone());
-        let dest_pp = PathParser::new(target_dir.clone());
+        let source_pp = PathParser::new(&source_dir);
+        let dest_pp = PathParser::new(&target_dir);
 
         //dbg!(&source_pp);
         //dbg!(&dest_pp);
@@ -70,13 +70,13 @@ impl ChangeDetector {
         let files1 = files::enumerate_files(&source_dir).unwrap();
         let results1 = files1
             .iter()
-            .map(|x| FileInfoParser::new(x.to_string(), source_dir.clone()));
+            .map(|x| FileInfoParser::new(x, &source_dir));
         println!("{} item(s) found in source", &files1.len());
 
         let files2 = files::enumerate_files(&target_dir).unwrap();
         let results2 = files2
             .iter()
-            .map(|x| FileInfoParser::new(x.to_string(), target_dir.clone()));
+            .map(|x| FileInfoParser::new(x, &target_dir));
         println!("{} item(s) found in target", &files2.len());
 
         let mut in_first_only = Vec::<FileInfoParser>::new();
