@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'quick-copy'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=quick-copy",
+                    "--package=quick-copy"
+                ],
+                "filter": {
+                    "name": "quick-copy",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "program": "${workspaceFolder}/target/debug/quick-copy",
+            "cwd": "${workspaceFolder}/target/debug/",
+            "sourceLanguages": [
+                "rust"
+            ]
+        }
+    ]
+}
