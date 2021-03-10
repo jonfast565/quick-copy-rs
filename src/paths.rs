@@ -205,7 +205,7 @@ impl PathParser {
         let my_segment_string = self.segment.as_ref().unwrap().get_default_segment_string();
         let my_pp = PathParser::new(&my_segment_string);
         let mut my_pp_arr = my_pp.segment.unwrap().get_segments();
-        let mut new_arr : Vec<String> = Vec::new();
+        let mut new_arr: Vec<String> = Vec::new();
         new_arr.append(&mut my_pp_arr);
         new_arr.append(&mut segs_pp_arr);
         let formatted_sep = format!("{}", SPLITTER);

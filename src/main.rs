@@ -15,7 +15,6 @@ fn main() {
     let change_detector = change_detector::ChangeDetector::new(program_options.clone());
     let copier = copier::Copier::new(program_options.clone());
     let actions = change_detector.incremental_changes();
-    
     if actions.len() > 0 {
         copier.incremental_copy(actions);
     } else {

@@ -43,9 +43,7 @@ impl ChangeDetector {
         //dbg!(&source_pp);
         //dbg!(&dest_pp);
 
-        if source_pp.get_segment()
-            .identical(&dest_pp.get_segment())
-        {
+        if source_pp.get_segment().identical(&dest_pp.get_segment()) {
             println!(
                 "Source and destination paths are identical. 
                       Please change the paths to allow for copying."
@@ -66,15 +64,11 @@ impl ChangeDetector {
         }
 
         let files1 = files::visit_all(Path::new(&source_dir)).unwrap();
-        let results1 = files1
-            .iter()
-            .map(|x| FileInfoParser::new(x, &source_dir));
+        let results1 = files1.iter().map(|x| FileInfoParser::new(x, &source_dir));
         println!("{} item(s) found in source", &files1.len());
 
         let files2 = files::visit_all(Path::new(&target_dir)).unwrap();
-        let results2 = files2
-            .iter()
-            .map(|x| FileInfoParser::new(x, &target_dir));
+        let results2 = files2.iter().map(|x| FileInfoParser::new(x, &target_dir));
         println!("{} item(s) found in target", &files2.len());
 
         let mut in_first_only = Vec::<FileInfoParser>::new();
