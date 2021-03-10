@@ -34,10 +34,5 @@ pub fn visit_all(dir: &Path) -> io::Result<Vec<String>> {
             result.push(path.into_os_string().into_string().unwrap());
         }
     }
-
-    for e in result.clone() {
-        println!("{}", e);
-    }
-
     Ok(result)
 }
