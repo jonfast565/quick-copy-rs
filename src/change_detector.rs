@@ -6,6 +6,7 @@ use crate::paths::FileInfoParserAction;
 use crate::paths::PathParser;
 use crate::utilities;
 
+use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
 
@@ -64,18 +65,47 @@ impl ChangeDetector {
         }
 
         let files1 = files::visit_all(Path::new(&source_dir)).unwrap();
-        let results1 = files1.iter().map(|x| FileInfoParser::new(x, &source_dir));
+        let results1 = files1
+            .iter()
+            .map(|x| FileInfoParser::new(x, &source_dir))
+            .collect::<Vec<FileInfoParser>>();
         println!("{} item(s) found in source", &files1.len());
 
         let files2 = files::visit_all(Path::new(&target_dir)).unwrap();
-        let results2 = files2.iter().map(|x| FileInfoParser::new(x, &target_dir));
+        let results2 = files2
+            .iter()
+            .map(|x| FileInfoParser::new(x, &target_dir))
+            .collect::<Vec<FileInfoParser>>();
         println!("{} item(s) found in target", &files2.len());
 
+        let mut files1_hash = HashMap::<String, String>::new();
+        for file1 in &results1 {
+            files1_hash.insert(
+                file1
+                    .get_segment()
+                    .get_default_segment_string()
+                    .to_lowercase(),
+                file1.get_path(),
+            );
+        }
+
+        let mut files2_hash = HashMap::<String, String>::new();
+        for file2 in &results2 {
+            files2_hash.insert(
+                file2
+                    .get_segment()
+                    .get_default_segment_string()
+                    .to_lowercase(),
+                file2.get_path(),
+            );
+        }
+
+        // TODO: Use hashes to improve performance
         let mut in_first_only = Vec::<FileInfoParser>::new();
         let mut in_both = Vec::<(FileInfoParser, FileInfoParser)>::new();
 
         println!("Checking for created or updated files");
-        for file1 in results1.clone() {
+        for file1 in &results1 {
             let mut found_in_first_only = true;
             let files_in_both = results2.clone().filter(|file2| {
                 utilities::string_match(
@@ -95,6 +125,8 @@ impl ChangeDetector {
 
             in_first_only.push(file1);
         }
+        println!("{} items to be created", &in_first_only.len());
+        println!("{} items to be updated", &in_both.len());
 
         println!("Checking for deleted files");
         let mut in_second_only = Vec::<FileInfoParser>::new();
@@ -109,6 +141,7 @@ impl ChangeDetector {
                 in_second_only.push(file2);
             }
         }
+        println!("{} items to be deleted", &in_second_only.len());
 
         println!("Enumerating possible actions");
         let mut actions = Vec::<FileInfoParserAction>::new();
