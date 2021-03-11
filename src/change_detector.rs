@@ -64,14 +64,14 @@ impl ChangeDetector {
             fs::create_dir(target_dir_path).unwrap();
         }
 
-        let files1 = files::visit_all(Path::new(&source_dir)).unwrap();
+        let files1 = files::get_all_files(&source_dir).unwrap();
         let results1 = files1
             .iter()
             .map(|x| FileInfoParser::new(x, &source_dir))
             .collect::<Vec<FileInfoParser>>();
         println!("{} item(s) found in source", &files1.len());
 
-        let files2 = files::visit_all(Path::new(&target_dir)).unwrap();
+        let files2 = files::get_all_files(&target_dir).unwrap();
         let results2 = files2
             .iter()
             .map(|x| FileInfoParser::new(x, &target_dir))
@@ -105,25 +105,15 @@ impl ChangeDetector {
         let mut in_both = Vec::<(FileInfoParser, FileInfoParser)>::new();
 
         println!("Checking for created or updated files");
-        for file1 in &results1 {
-            let mut found_in_first_only = true;
-            let files_in_both = results2.clone().filter(|file2| {
-                utilities::string_match(
-                    file1.get_segment().get_default_segment_string(),
-                    file2.get_segment().get_default_segment_string(),
-                )
-            });
-
-            for file2 in files_in_both {
-                in_both.push((file1.clone(), file2));
-                found_in_first_only = false;
+        for file1 in results1 {
+            let key = file1.get_segment().get_default_segment_string().to_lowercase();
+            if files2_hash.contains_key(&key) {
+                let file2 = &files2_hash[&key];
+                let fif = FileInfoParser::new(&file2, &target_dir);
+                in_both.push((file1, fif));
+            } else {
+                in_first_only.push(file1);
             }
-
-            if !found_in_first_only {
-                continue;
-            }
-
-            in_first_only.push(file1);
         }
         println!("{} items to be created", &in_first_only.len());
         println!("{} items to be updated", &in_both.len());
@@ -131,13 +121,8 @@ impl ChangeDetector {
         println!("Checking for deleted files");
         let mut in_second_only = Vec::<FileInfoParser>::new();
         for file2 in results2 {
-            let found_in_second_only = results1.clone().all(|file1| {
-                !utilities::string_match(
-                    file1.get_segment().get_default_segment_string(),
-                    file2.get_segment().get_default_segment_string(),
-                )
-            });
-            if found_in_second_only {
+            let key = file2.get_segment().get_default_segment_string().to_lowercase();
+            if !files1_hash.contains_key(&key) {
                 in_second_only.push(file2);
             }
         }
