@@ -16,8 +16,9 @@ use log::{info};
 fn main() {
     setup_logger().unwrap();
     info!("{}", header::get_header());
-
-    let program_options = configuration::ProgramOptions::new_test();
+    
+    let program_options = configuration::ProgramOptions::from_command_line_arguments();
+    // let program_options = configuration::ProgramOptions::new_test();
     let change_detector = change_detector::ChangeDetector::new(program_options.clone());
     let copier = copier::Copier::new(program_options.clone());
     let actions = change_detector.incremental_changes();
