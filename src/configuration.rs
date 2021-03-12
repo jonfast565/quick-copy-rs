@@ -23,7 +23,7 @@ impl ProgramOptions {
             source_directory: "C:\\Users\\jfast\\OneDrive - American College of Cardiology\\Desktop\\Test1".to_string(),
             target_directory: "C:\\Users\\jfast\\OneDrive - American College of Cardiology\\Desktop\\Test2".to_string(),
             check_time: 30000.00,
-            enable_deletes: false,
+            enable_deletes: true,
             skip_folders: vec![],
             use_config_file: false,
         }
