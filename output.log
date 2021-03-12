@@ -1,0 +1,108 @@
+[2021-03-12][14:38:38][quick_copy][INFO] 
+_____                       __      ____                                
+/\  __`\          __        /\ \    /\  _`\                              
+\ \ \/\ \  __  __/\_\    ___\ \ \/'\\ \ \/\_\    ___   _____   __  __    
+\ \ \ \ \/\ \/\ \/\ \  /'___\ \ , < \ \ \/_/_  / __`\/\ '__`\/\ \/\ \   
+ \ \ \\'\\ \ \_\ \ \ \/\ \__/\ \ \\`\\ \ \L\ \/\ \L\ \ \ \L\ \ \ \_\ \  
+  \ \___\_\ \____/\ \_\ \____\\ \_\ \_\ \____/\ \____/\ \ ,__/\/`____ \ 
+   \/__//_/\/___/  \/_/\/____/ \/_/\/_/\/___/  \/___/  \ \ \/  `/___/> \
+                                                        \ \_\     /\___/
+                                                         \/_/     \/__/ 
+----------------------------------------------------------------------
+Version: 0.1.0
+Author: Jon Fast
+----------------------------------------------------------------------
+[2021-03-12][14:38:38][quick_copy::change_detector][INFO] Checking for changes...
+[2021-03-12][14:38:38][quick_copy::change_detector][INFO] Merging...
+[2021-03-12][14:38:38][quick_copy::change_detector][INFO] 5 item(s) found in source
+[2021-03-12][14:38:38][quick_copy::change_detector][INFO] 5 item(s) found in target
+[2021-03-12][14:38:38][quick_copy::change_detector][INFO] Checking for created or updated files
+[2021-03-12][14:38:38][quick_copy::change_detector][INFO] 0 items to be created
+[2021-03-12][14:38:38][quick_copy::change_detector][INFO] 5 items to be updated
+[2021-03-12][14:38:38][quick_copy::change_detector][INFO] Checking for deleted files
+[2021-03-12][14:38:38][quick_copy::change_detector][INFO] 0 items to be deleted
+[2021-03-12][14:38:38][quick_copy::change_detector][INFO] Enumerating possible actions
+[2021-03-12][14:38:38][quick_copy][INFO] Nothing to do.
+[2021-03-12][14:38:38][quick_copy][INFO] Done!
+[2021-03-12][14:40:10][quick_copy][INFO] 
+_____                       __      ____                                
+/\  __`\          __        /\ \    /\  _`\                              
+\ \ \/\ \  __  __/\_\    ___\ \ \/'\\ \ \/\_\    ___   _____   __  __    
+\ \ \ \ \/\ \/\ \/\ \  /'___\ \ , < \ \ \/_/_  / __`\/\ '__`\/\ \/\ \   
+ \ \ \\'\\ \ \_\ \ \ \/\ \__/\ \ \\`\\ \ \L\ \/\ \L\ \ \ \L\ \ \ \_\ \  
+  \ \___\_\ \____/\ \_\ \____\\ \_\ \_\ \____/\ \____/\ \ ,__/\/`____ \ 
+   \/__//_/\/___/  \/_/\/____/ \/_/\/_/\/___/  \/___/  \ \ \/  `/___/> \
+                                                        \ \_\     /\___/
+                                                         \/_/     \/__/ 
+----------------------------------------------------------------------
+Version: 0.1.0
+Author: Jon Fast
+----------------------------------------------------------------------
+[2021-03-12][14:40:10][quick_copy::change_detector][INFO] Checking for changes...
+[2021-03-12][14:40:10][quick_copy::change_detector][INFO] Merging...
+[2021-03-12][14:40:10][quick_copy::change_detector][INFO] 5 item(s) found in source.
+[2021-03-12][14:40:10][quick_copy::change_detector][INFO] 5 item(s) found in target.
+[2021-03-12][14:40:10][quick_copy::change_detector][INFO] Checking for created or updated files...
+[2021-03-12][14:40:10][quick_copy::change_detector][INFO] 0 items to be created.
+[2021-03-12][14:40:10][quick_copy::change_detector][INFO] 5 items to be updated.
+[2021-03-12][14:40:10][quick_copy::change_detector][INFO] Checking for deleted files...
+[2021-03-12][14:40:10][quick_copy::change_detector][INFO] 0 items to be deleted.
+[2021-03-12][14:40:10][quick_copy::change_detector][INFO] Enumerating possible actions...
+[2021-03-12][14:40:10][quick_copy::change_detector][INFO] 0 actions found.
+[2021-03-12][14:40:10][quick_copy][INFO] Nothing to do.
+[2021-03-12][14:40:10][quick_copy][INFO] Done!
+[2021-03-12][14:45:30][quick_copy][INFO] 
+_____                       __      ____                                
+/\  __`\          __        /\ \    /\  _`\                              
+\ \ \/\ \  __  __/\_\    ___\ \ \/'\\ \ \/\_\    ___   _____   __  __    
+\ \ \ \ \/\ \/\ \/\ \  /'___\ \ , < \ \ \/_/_  / __`\/\ '__`\/\ \/\ \   
+ \ \ \\'\\ \ \_\ \ \ \/\ \__/\ \ \\`\\ \ \L\ \/\ \L\ \ \ \L\ \ \ \_\ \  
+  \ \___\_\ \____/\ \_\ \____\\ \_\ \_\ \____/\ \____/\ \ ,__/\/`____ \ 
+   \/__//_/\/___/  \/_/\/____/ \/_/\/_/\/___/  \/___/  \ \ \/  `/___/> \
+                                                        \ \_\     /\___/
+                                                         \/_/     \/__/ 
+----------------------------------------------------------------------
+Version: 0.1.0
+Author: Jon Fast
+Working Directory: C:\Users\jfast\OneDrive - American College of Cardiology\Desktop\Repos\quick-copy-rs----------------------------------------------------------------------
+[2021-03-12][14:45:30][quick_copy::change_detector][INFO] Checking for changes...
+[2021-03-12][14:45:30][quick_copy::change_detector][INFO] Merging...
+[2021-03-12][14:45:30][quick_copy::change_detector][INFO] 5 item(s) found in source.
+[2021-03-12][14:45:30][quick_copy::change_detector][INFO] 5 item(s) found in target.
+[2021-03-12][14:45:30][quick_copy::change_detector][INFO] Checking for created or updated files...
+[2021-03-12][14:45:30][quick_copy::change_detector][INFO] 0 items to be created.
+[2021-03-12][14:45:30][quick_copy::change_detector][INFO] 5 items to be updated.
+[2021-03-12][14:45:30][quick_copy::change_detector][INFO] Checking for deleted files...
+[2021-03-12][14:45:30][quick_copy::change_detector][INFO] 0 items to be deleted.
+[2021-03-12][14:45:30][quick_copy::change_detector][INFO] Enumerating possible actions...
+[2021-03-12][14:45:30][quick_copy::change_detector][INFO] 0 actions found.
+[2021-03-12][14:45:30][quick_copy][INFO] Nothing to do.
+[2021-03-12][14:45:30][quick_copy][INFO] Done!
+[2021-03-12][14:45:43][quick_copy][INFO] 
+_____                       __      ____                                
+/\  __`\          __        /\ \    /\  _`\                              
+\ \ \/\ \  __  __/\_\    ___\ \ \/'\\ \ \/\_\    ___   _____   __  __    
+\ \ \ \ \/\ \/\ \/\ \  /'___\ \ , < \ \ \/_/_  / __`\/\ '__`\/\ \/\ \   
+ \ \ \\'\\ \ \_\ \ \ \/\ \__/\ \ \\`\\ \ \L\ \/\ \L\ \ \ \L\ \ \ \_\ \  
+  \ \___\_\ \____/\ \_\ \____\\ \_\ \_\ \____/\ \____/\ \ ,__/\/`____ \ 
+   \/__//_/\/___/  \/_/\/____/ \/_/\/_/\/___/  \/___/  \ \ \/  `/___/> \
+                                                        \ \_\     /\___/
+                                                         \/_/     \/__/ 
+----------------------------------------------------------------------
+Version: 0.1.0
+Author: Jon Fast
+Working Directory: C:\Users\jfast\OneDrive - American College of Cardiology\Desktop\Repos\quick-copy-rs
+----------------------------------------------------------------------
+[2021-03-12][14:45:43][quick_copy::change_detector][INFO] Checking for changes...
+[2021-03-12][14:45:43][quick_copy::change_detector][INFO] Merging...
+[2021-03-12][14:45:43][quick_copy::change_detector][INFO] 5 item(s) found in source.
+[2021-03-12][14:45:43][quick_copy::change_detector][INFO] 5 item(s) found in target.
+[2021-03-12][14:45:43][quick_copy::change_detector][INFO] Checking for created or updated files...
+[2021-03-12][14:45:43][quick_copy::change_detector][INFO] 0 items to be created.
+[2021-03-12][14:45:43][quick_copy::change_detector][INFO] 5 items to be updated.
+[2021-03-12][14:45:43][quick_copy::change_detector][INFO] Checking for deleted files...
+[2021-03-12][14:45:43][quick_copy::change_detector][INFO] 0 items to be deleted.
+[2021-03-12][14:45:43][quick_copy::change_detector][INFO] Enumerating possible actions...
+[2021-03-12][14:45:43][quick_copy::change_detector][INFO] 0 actions found.
+[2021-03-12][14:45:43][quick_copy][INFO] Nothing to do.
+[2021-03-12][14:45:43][quick_copy][INFO] Done!

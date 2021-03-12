@@ -1,3 +1,5 @@
+use std::env;
+
 const HEADER: &'static str = r"
 _____                       __      ____                                
 /\  __`\          __        /\ \    /\  _`\                              
@@ -14,6 +16,12 @@ const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 const AUTHOR: &'static str = "Jon Fast";
 
 pub fn get_header() -> String {
+    let current_dir = env::current_dir()
+        .unwrap()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+
     String::from(
         HEADER.to_owned()
             + "\n"
@@ -24,6 +32,9 @@ pub fn get_header() -> String {
             + "\n"
             + "Author: "
             + AUTHOR
+            + "\n"
+            + "Working Directory: "
+            + current_dir.as_str()
             + "\n"
             + SEPARATOR,
     )

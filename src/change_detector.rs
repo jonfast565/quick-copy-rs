@@ -68,14 +68,14 @@ impl ChangeDetector {
             .iter()
             .map(|x| FileInfoParser::new(x, &source_dir))
             .collect::<Vec<FileInfoParser>>();
-            info!("{} item(s) found in source", &files1.len());
+            info!("{} item(s) found in source.", &files1.len());
 
         let files2 = files::get_all_files(&target_dir).unwrap();
         let results2 = files2
             .iter()
             .map(|x| FileInfoParser::new(x, &target_dir))
             .collect::<Vec<FileInfoParser>>();
-            info!("{} item(s) found in target", &files2.len());
+            info!("{} item(s) found in target.", &files2.len());
 
         let mut files1_hash = HashMap::<String, String>::new();
         for file1 in &results1 {
@@ -103,7 +103,7 @@ impl ChangeDetector {
         let mut in_first_only = Vec::<FileInfoParser>::new();
         let mut in_both = Vec::<(FileInfoParser, FileInfoParser)>::new();
 
-        info!("Checking for created or updated files");
+        info!("Checking for created or updated files...");
         for file1 in results1 {
             let key = file1
                 .get_segment()
@@ -117,10 +117,10 @@ impl ChangeDetector {
                 in_first_only.push(file1);
             }
         }
-        info!("{} items to be created", &in_first_only.len());
-        info!("{} items to be updated", &in_both.len());
+        info!("{} items to be created.", &in_first_only.len());
+        info!("{} items to be updated.", &in_both.len());
 
-        info!("Checking for deleted files");
+        info!("Checking for deleted files...");
         let mut in_second_only = Vec::<FileInfoParser>::new();
         for file2 in results2 {
             let key = file2
@@ -131,9 +131,9 @@ impl ChangeDetector {
                 in_second_only.push(file2);
             }
         }
-        info!("{} items to be deleted", &in_second_only.len());
+        info!("{} items to be deleted.", &in_second_only.len());
 
-        info!("Enumerating possible actions");
+        info!("Enumerating possible actions...");
         let mut actions = Vec::<FileInfoParserAction>::new();
         let mut first_paths = in_first_only
             .clone()
@@ -157,6 +157,8 @@ impl ChangeDetector {
                 actions.push(FileInfoParserAction::new(first, second, ActionType::Update));
             }
         }
+
+        info!("{} actions found.", &actions.len());
         actions
     }
 }
