@@ -1,14 +1,5 @@
-#[cfg(windows)] extern crate winapi;
-
 use std::path::Path;
 use std::{fs, io};
-
-use std::ffi::OsStr;
-use std::os::windows::ffi::OsStrExt;
-use std::iter::once;
-use std::mem;
-use std::ptr::null_mut;
-use std::io::Error;
 use std::str;
 
 pub fn enumerate_files(path: &str) -> io::Result<Vec<String>> {
