@@ -1,43 +1,65 @@
 #![allow(dead_code)]
-
+#[macro_use]
+extern crate clap;
+use log::{info, error};
 use chrono;
 
 mod change_detector;
 mod configuration;
 mod copier;
 mod files;
-mod header;
 mod paths;
 mod utilities;
 mod tests;
 
-use log::{info};
+use configuration::{ProgramOptions, RuntimeType};
+use change_detector::{ChangeDetector};
+use copier::{Copier};
 
 fn main() {
     setup_logger().unwrap();
-    info!("{}", header::get_header());
-    
-    let program_options = configuration::ProgramOptions::from_command_line_arguments();
-    // let program_options = configuration::ProgramOptions::new_test();
-    let change_detector = change_detector::ChangeDetector::new(program_options.clone());
-    let copier = copier::Copier::new(program_options.clone());
+    let program_options = ProgramOptions::from_command_line_arguments();
+    match &program_options.runtime {
+        RuntimeType::Batch => run_batch_mode(program_options.clone()),
+        RuntimeType::Console => run_console_mode(program_options.clone()),
+        RuntimeType::Service => run_service_mode(program_options.clone())
+    }
+    info!("Done!");
+}
+
+fn run_console_mode(o: ProgramOptions) {
+    loop {
+        run_cycle(o.clone());
+    }
+}
+
+fn run_batch_mode(o: ProgramOptions) {
+    run_cycle(o);
+}
+
+fn run_service_mode(_o: ProgramOptions) {
+    error!("Not implemented as a Windows Service");
+    panic!("Not implemented as a Windows Service");
+}
+
+fn run_cycle(o: ProgramOptions) {
+    let change_detector = ChangeDetector::new(o.clone());
+    let copier = Copier::new(o.clone());
     let actions = change_detector.incremental_changes();
     if actions.len() > 0 {
         copier.incremental_copy(actions);
     } else {
         info!("Nothing to do.")
     }
-
-    info!("Done!");
 }
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
         .format(|out, message, record| {
             out.finish(format_args!(
-                "{}[{}][{}] {}",
+                "{}[{}] {}",
                 chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
-                record.target(),
+                // record.target(),
                 record.level(),
                 message
             ))

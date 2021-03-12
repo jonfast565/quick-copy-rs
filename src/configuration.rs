@@ -1,10 +1,64 @@
 use clap::{App, Arg};
+use std::str::FromStr;
+use std::env;
+use log::{info};
+
+const HEADER: &'static str = r"
+_____                       __      ____                                
+/\  __`\          __        /\ \    /\  _`\                              
+\ \ \/\ \  __  __/\_\    ___\ \ \/'\\ \ \/\_\    ___   _____   __  __    
+\ \ \ \ \/\ \/\ \/\ \  /'___\ \ , < \ \ \/_/_  / __`\/\ '__`\/\ \/\ \   
+ \ \ \\'\\ \ \_\ \ \ \/\ \__/\ \ \\`\\ \ \L\ \/\ \L\ \ \ \L\ \ \ \_\ \  
+  \ \___\_\ \____/\ \_\ \____\\ \_\ \_\ \____/\ \____/\ \ ,__/\/`____ \ 
+   \/__//_/\/___/  \/_/\/____/ \/_/\/_/\/___/  \/___/  \ \ \/  `/___/> \
+                                                        \ \_\     /\___/
+                                                         \/_/     \/__/ ";
+const SEPARATOR: &'static str =
+    r"----------------------------------------------------------------------";
+
+pub fn get_header() -> String {
+    let current_dir = env::current_dir()
+        .unwrap()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+
+    String::from(
+        HEADER.to_owned()
+            + "\n"
+            + SEPARATOR
+            + "\n"
+            + "Version: "
+            + crate_version!()
+            + "\n"
+            + "Author: "
+            + crate_authors!("\n")
+            + "\n"
+            + "Working Directory: "
+            + current_dir.as_str()
+            + "\n"
+            + SEPARATOR,
+    )
+}
 
 #[derive(Clone)]
 pub enum RuntimeType {
     Console,
     Service,
     Batch,
+}
+
+impl FromStr for RuntimeType {
+    type Err = &'static str;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Console" => Ok(RuntimeType::Console),
+            "Service" => Ok(RuntimeType::Service),
+            "Batch" => Ok(RuntimeType::Batch),
+            _ => Err("No match"),
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -20,10 +74,12 @@ pub struct ProgramOptions {
 
 impl ProgramOptions {
     pub fn from_command_line_arguments() -> ProgramOptions {
-        let app = App::new("QuickCopy")
-            .version(env!("CARGO_PKG_VERSION"))
-            .about("Performs a quick and efficient incremental copy of files to a new directory.")
-            .author("Jon Fast")
+        info!("{}", get_header());
+
+        let app = App::new(crate_name!())
+            .version(crate_version!())
+            .about(crate_description!())
+            .author(crate_authors!("\n"))
             .arg(
                 Arg::with_name("source_directory")
                     .short("s")
@@ -81,21 +137,38 @@ impl ProgramOptions {
                     .required(false),
             )
             .get_matches();
-        ProgramOptions::new_test()
-    }
 
-    pub fn new_test() -> ProgramOptions {
+        let runtime: RuntimeType =
+            value_t!(app.value_of("runtime"), RuntimeType).unwrap_or_else(|e| e.exit());
+        let source_directory: String = if let Some(s) = app.value_of("source_directory") {
+            s.to_string()
+        } else {
+            "".to_string()
+        };
+        let target_directory: String = if let Some(s) = app.value_of("target_directory") {
+            s.to_string()
+        } else {
+            "".to_string()
+        };
+        let check_time: f64 = if let Some(s) = app.value_of("check_time") {
+            s.parse::<f64>().unwrap()
+        } else {
+            3000.00
+        };
+        let enable_deletes: bool = match app.occurrences_of("d") {
+            0 => false,
+            1 => true,
+            _ => false
+        };
+        let skip_folders: Vec<String> = vec![];
+
         ProgramOptions {
-            runtime: RuntimeType::Batch,
-            source_directory:
-                "C:\\Users\\jfast\\OneDrive - American College of Cardiology\\Desktop\\Test1"
-                    .to_string(),
-            target_directory:
-                "C:\\Users\\jfast\\OneDrive - American College of Cardiology\\Desktop\\Test2"
-                    .to_string(),
-            check_time: 30000.00,
-            enable_deletes: true,
-            skip_folders: vec![],
+            runtime: runtime,
+            source_directory: source_directory,
+            target_directory: target_directory,
+            check_time: check_time,
+            enable_deletes: enable_deletes,
+            skip_folders: skip_folders,
             use_config_file: false,
         }
     }
