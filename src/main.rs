@@ -7,6 +7,7 @@ mod files;
 mod header;
 mod paths;
 mod utilities;
+mod tests;
 
 fn main() {
     println!("{}", header::get_header());
