@@ -29,18 +29,22 @@ fn main() {
 }
 
 fn run_console_mode(o: ProgramOptions) {
+    info!("Running in console mode");
     loop {
         run_cycle(o.clone());
+        info!("Waiting {} ms", o.check_time);
         let ms = time::Duration::from_millis(o.check_time);
         thread::sleep(ms);
     }
 }
 
 fn run_batch_mode(o: ProgramOptions) {
+    info!("Running in batch mode");
     run_cycle(o);
 }
 
 fn run_service_mode(_o: ProgramOptions) {
+    info!("Running in service mode");
     error!("Not implemented as a Windows Service");
     panic!("Not implemented as a Windows Service");
 }
