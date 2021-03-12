@@ -4,8 +4,7 @@ use crate::paths::ActionType;
 use crate::paths::FileInfoParser;
 use crate::paths::FileInfoParserAction;
 use crate::paths::PathParser;
-/// use crate::utilities;
-
+use log::{info, error, warn};
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
@@ -21,19 +20,19 @@ impl ChangeDetector {
 
     #[warn()]
     pub fn changed(&self) -> bool {
-        println!("Checking for changes...");
+        info!("Checking for changes...");
         let merge = self.three_way_merge();
         merge.len() > 0
     }
 
     pub fn incremental_changes(&self) -> Vec<FileInfoParserAction> {
-        println!("Checking for changes...");
+        info!("Checking for changes...");
         let merge = self.three_way_merge();
         merge
     }
 
     pub fn three_way_merge(&self) -> Vec<FileInfoParserAction> {
-        println!("Merging...");
+        info!("Merging...");
 
         let source_dir = self.program_options.get_source_directory();
         let target_dir = self.program_options.get_target_directory();
@@ -45,7 +44,7 @@ impl ChangeDetector {
         //dbg!(&dest_pp);
 
         if source_pp.get_segment().identical(&dest_pp.get_segment()) {
-            println!(
+            error!(
                 "Source and destination paths are identical. 
                       Please change the paths to allow for copying."
             );
@@ -54,13 +53,13 @@ impl ChangeDetector {
 
         let source_dir_path = Path::new(&source_dir);
         if !source_dir_path.exists() {
-            println!("Source dir doesn't exist; creating it.");
+            warn!("Source dir doesn't exist; creating it.");
             fs::create_dir(source_dir_path).unwrap();
         }
 
         let target_dir_path = Path::new(&target_dir);
         if !target_dir_path.exists() {
-            println!("Target dir doesn't exist; creating it.");
+            warn!("Target dir doesn't exist; creating it.");
             fs::create_dir(target_dir_path).unwrap();
         }
 
@@ -69,14 +68,14 @@ impl ChangeDetector {
             .iter()
             .map(|x| FileInfoParser::new(x, &source_dir))
             .collect::<Vec<FileInfoParser>>();
-        println!("{} item(s) found in source", &files1.len());
+            info!("{} item(s) found in source", &files1.len());
 
         let files2 = files::get_all_files(&target_dir).unwrap();
         let results2 = files2
             .iter()
             .map(|x| FileInfoParser::new(x, &target_dir))
             .collect::<Vec<FileInfoParser>>();
-        println!("{} item(s) found in target", &files2.len());
+            info!("{} item(s) found in target", &files2.len());
 
         let mut files1_hash = HashMap::<String, String>::new();
         for file1 in &results1 {
@@ -104,9 +103,12 @@ impl ChangeDetector {
         let mut in_first_only = Vec::<FileInfoParser>::new();
         let mut in_both = Vec::<(FileInfoParser, FileInfoParser)>::new();
 
-        println!("Checking for created or updated files");
+        info!("Checking for created or updated files");
         for file1 in results1 {
-            let key = file1.get_segment().get_default_segment_string().to_lowercase();
+            let key = file1
+                .get_segment()
+                .get_default_segment_string()
+                .to_lowercase();
             if files2_hash.contains_key(&key) {
                 let file2 = &files2_hash[&key];
                 let fif = FileInfoParser::new(&file2, &target_dir);
@@ -115,20 +117,23 @@ impl ChangeDetector {
                 in_first_only.push(file1);
             }
         }
-        println!("{} items to be created", &in_first_only.len());
-        println!("{} items to be updated", &in_both.len());
+        info!("{} items to be created", &in_first_only.len());
+        info!("{} items to be updated", &in_both.len());
 
-        println!("Checking for deleted files");
+        info!("Checking for deleted files");
         let mut in_second_only = Vec::<FileInfoParser>::new();
         for file2 in results2 {
-            let key = file2.get_segment().get_default_segment_string().to_lowercase();
+            let key = file2
+                .get_segment()
+                .get_default_segment_string()
+                .to_lowercase();
             if !files1_hash.contains_key(&key) {
                 in_second_only.push(file2);
             }
         }
-        println!("{} items to be deleted", &in_second_only.len());
+        info!("{} items to be deleted", &in_second_only.len());
 
-        println!("Enumerating possible actions");
+        info!("Enumerating possible actions");
         let mut actions = Vec::<FileInfoParserAction>::new();
         let mut first_paths = in_first_only
             .clone()

@@ -4,6 +4,7 @@ use crate::paths::{ActionType, FileInfoParserAction, PathParser};
 use itertools::Itertools;
 use std::cmp::Ordering;
 use std::fs;
+use log::{info, warn};
 
 pub struct Copier {
     program_options: ProgramOptions,
@@ -52,7 +53,7 @@ impl Copier {
                             .contains_all_of_segment(&s.get_segment())
                         {
                             let source_path = &source.unwrap().get_path();
-                            println!("Skipped {} because {} skipped.", source_path, skip_segment);
+                            warn!("Skipped {} because {} skipped.", source_path, skip_segment);
                         }
                     }
 
@@ -60,10 +61,10 @@ impl Copier {
                     let dst = destination_segment;
 
                     if c.source.unwrap().is_file {
-                        println!("Copying {} to {}", &src, &dst);
+                        info!("Copying {} to {}", &src, &dst);
                         fs::copy(src, dst).unwrap();
                     } else {
-                        println!("Creating dir {}", &dst);
+                        info!("Creating dir {}", &dst);
                         fs::create_dir(dst).unwrap();
                     }
                 }
@@ -78,7 +79,7 @@ impl Copier {
                             .contains_all_of_segment(&s.get_segment())
                         {
                             let source_path = source.unwrap().get_path();
-                            println!("Skipped {} because {} skipped.", source_path, skip_segment);
+                            info!("Skipped {} because {} skipped.", source_path, skip_segment);
                         }
                     }
 
@@ -86,15 +87,15 @@ impl Copier {
                     let dst = c.destination.unwrap().get_path();
 
                     if c.source.unwrap().is_file {
-                        println!("Copying {} to {}", &src, &dst);
+                        info!("Copying {} to {}", &src, &dst);
                         fs::copy(&src, dst).unwrap();
                     } else {
-                        println!("Creating dir {}", &dst);
+                        info!("Creating dir {}", &dst);
                         fs::create_dir(dst).unwrap();
                     }
                 }
                 ActionType::Delete => {
-                    println!("Nothing to do.");
+                    info!("Nothing to do.");
                 }
             }
         }
@@ -102,10 +103,10 @@ impl Copier {
         for d in ordered_deletes {
             match d.action_type {
                 ActionType::Create => {
-                    println!("Nothing to do.")
+                    info!("Nothing to do.")
                 }
                 ActionType::Update => {
-                    println!("Nothing to do.");
+                    info!("Nothing to do.");
                 }
                 ActionType::Delete => {
                     if self.program_options.enable_deletes {
@@ -113,14 +114,14 @@ impl Copier {
                         let destination_path = destination.unwrap().get_path();
                         let file = destination.unwrap().is_file;
                         if file {
-                            println!("Remove file {}", &destination_path);
+                            info!("Remove file {}", &destination_path);
                             fs::remove_file(destination_path).unwrap();
                         } else {
-                            println!("Remove directory {}", &destination_path);
+                            info!("Remove directory {}", &destination_path);
                             fs::remove_dir(destination_path).unwrap();
                         }
                     } else {
-                        println!("Deleted suppressed by config");
+                        info!("Deleted suppressed by config");
                         break;
                     }
                 }

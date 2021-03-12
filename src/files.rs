@@ -2,15 +2,17 @@ use std::path::Path;
 use std::{fs, io};
 use std::str;
 
+use log::{info, debug};
+
 pub fn enumerate_files(path: &str) -> io::Result<Vec<String>> {
     let mut entries = fs::read_dir(path)?
         .map(|res| res.map(|e| e.path()))
         .collect::<Result<Vec<_>, io::Error>>()?;
     entries.sort();
-    println!("{} entries...", entries.len());
+    info!("{} entries...", entries.len());
 
     for e in entries.clone() {
-        println!("{}", e.to_str().unwrap());
+        debug!("{}", e.to_str().unwrap());
     }
 
     let result = entries

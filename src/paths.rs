@@ -1,5 +1,6 @@
 use itertools::EitherOrBoth::{Both, Left, Right};
 use itertools::Itertools;
+use log::{debug};
 use std::cmp::Ordering;
 use std::collections::VecDeque;
 use std::fs;
@@ -149,8 +150,7 @@ impl PathParser {
         normalized.reverse();
         let mut next_segment: Option<Box<PathSegment>> = None;
 
-        //dbg!(&path);
-        //dbg!(&normalized);
+        debug!("Build segments for: {}.", &path);
 
         for seg in normalized {
             let new_item = PathSegment {
