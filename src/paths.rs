@@ -1,6 +1,6 @@
 use itertools::EitherOrBoth::{Both, Left, Right};
 use itertools::Itertools;
-use log::{debug};
+use log::debug;
 use std::cmp::Ordering;
 use std::collections::VecDeque;
 use std::fs;
@@ -314,26 +314,17 @@ impl PartialOrd for FileInfoParserAction {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         let self_seg = match self.source.as_ref() {
             Some(x) => x,
-            None => self.destination.as_ref().unwrap()
+            None => self.destination.as_ref().unwrap(),
         };
-        
-        let other_seg = match other.source.as_ref() { 
+
+        let other_seg = match other.source.as_ref() {
             Some(x) => x,
-            None => other.destination.as_ref().unwrap()
+            None => other.destination.as_ref().unwrap(),
         };
 
-        let self_seg_len = self_seg
-            .segment
-            .as_ref()
-            .unwrap()
-            .get_segment_length();
+        let self_seg_len = self_seg.segment.as_ref().unwrap().get_segment_length();
 
-        let other_seg_len = other_seg
-            .segment
-            .as_ref()
-            .unwrap()
-            .get_segment_length();
-            
+        let other_seg_len = other_seg.segment.as_ref().unwrap().get_segment_length();
         if self_seg_len > other_seg_len {
             return Some(Ordering::Greater);
         } else if self_seg_len < other_seg_len {

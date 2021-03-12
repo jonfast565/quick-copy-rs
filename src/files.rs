@@ -1,8 +1,8 @@
 use std::path::Path;
-use std::{fs, io};
 use std::str;
+use std::{fs, io};
 
-use log::{info, debug};
+use log::{debug, info};
 
 pub fn enumerate_files(path: &str) -> io::Result<Vec<String>> {
     let mut entries = fs::read_dir(path)?
@@ -39,4 +39,3 @@ pub fn get_all_files(dir: &String) -> io::Result<Vec<String>> {
     }
     Ok(result)
 }
-

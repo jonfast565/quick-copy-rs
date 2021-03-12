@@ -2,9 +2,9 @@ use crate::configuration::ProgramOptions;
 use crate::paths::{ActionType, FileInfoParserAction, PathParser};
 
 use itertools::Itertools;
+use log::{info, warn};
 use std::cmp::Ordering;
 use std::fs;
-use log::{info, warn};
 
 pub struct Copier {
     program_options: ProgramOptions,

@@ -1,7 +1,7 @@
 use clap::{App, Arg};
-use std::str::FromStr;
+use log::info;
 use std::env;
-use log::{info};
+use std::str::FromStr;
 
 const HEADER: &'static str = r"
 _____                       __      ____                                
@@ -158,7 +158,7 @@ impl ProgramOptions {
         let enable_deletes: bool = match app.occurrences_of("d") {
             0 => false,
             1 => true,
-            _ => false
+            _ => false,
         };
         let skip_folders: Vec<String> = vec![];
 

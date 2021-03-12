@@ -1,8 +1,10 @@
 #![allow(dead_code)]
+
 #[macro_use]
 extern crate clap;
-use log::{info, error};
+
 use chrono;
+use log::{error, info};
 use std::{thread, time};
 
 mod change_detector;
@@ -10,12 +12,12 @@ mod configuration;
 mod copier;
 mod files;
 mod paths;
-mod utilities;
 mod tests;
+mod utilities;
 
+use change_detector::ChangeDetector;
 use configuration::{ProgramOptions, RuntimeType};
-use change_detector::{ChangeDetector};
-use copier::{Copier};
+use copier::Copier;
 
 fn main() {
     setup_logger().unwrap();
@@ -23,7 +25,7 @@ fn main() {
     match &program_options.runtime {
         RuntimeType::Batch => run_batch_mode(program_options.clone()),
         RuntimeType::Console => run_console_mode(program_options.clone()),
-        RuntimeType::Service => run_service_mode(program_options.clone())
+        RuntimeType::Service => run_service_mode(program_options.clone()),
     }
     info!("Done!");
 }

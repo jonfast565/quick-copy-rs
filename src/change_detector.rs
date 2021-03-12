@@ -4,7 +4,7 @@ use crate::paths::ActionType;
 use crate::paths::FileInfoParser;
 use crate::paths::FileInfoParserAction;
 use crate::paths::PathParser;
-use log::{info, error, warn};
+use log::{error, info, warn};
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
@@ -68,14 +68,14 @@ impl ChangeDetector {
             .iter()
             .map(|x| FileInfoParser::new(x, &source_dir))
             .collect::<Vec<FileInfoParser>>();
-            info!("{} item(s) found in source.", &files1.len());
+        info!("{} item(s) found in source.", &files1.len());
 
         let files2 = files::get_all_files(&target_dir).unwrap();
         let results2 = files2
             .iter()
             .map(|x| FileInfoParser::new(x, &target_dir))
             .collect::<Vec<FileInfoParser>>();
-            info!("{} item(s) found in target.", &files2.len());
+        info!("{} item(s) found in target.", &files2.len());
 
         let mut files1_hash = HashMap::<String, String>::new();
         for file1 in &results1 {
