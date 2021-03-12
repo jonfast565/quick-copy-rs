@@ -3,6 +3,7 @@
 extern crate clap;
 use log::{info, error};
 use chrono;
+use std::{thread, time};
 
 mod change_detector;
 mod configuration;
@@ -30,6 +31,8 @@ fn main() {
 fn run_console_mode(o: ProgramOptions) {
     loop {
         run_cycle(o.clone());
+        let ms = time::Duration::from_millis(o.check_time);
+        thread::sleep(ms);
     }
 }
 

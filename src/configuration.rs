@@ -66,7 +66,7 @@ pub struct ProgramOptions {
     pub runtime: RuntimeType,
     source_directory: String,
     target_directory: String,
-    pub check_time: f64,
+    pub check_time: u64,
     pub enable_deletes: bool,
     pub skip_folders: Vec<String>,
     pub use_config_file: bool,
@@ -150,10 +150,10 @@ impl ProgramOptions {
         } else {
             "".to_string()
         };
-        let check_time: f64 = if let Some(s) = app.value_of("check_time") {
-            s.parse::<f64>().unwrap()
+        let check_time: u64 = if let Some(s) = app.value_of("check_time") {
+            s.parse::<u64>().unwrap()
         } else {
-            3000.00
+            3000
         };
         let enable_deletes: bool = match app.occurrences_of("d") {
             0 => false,
