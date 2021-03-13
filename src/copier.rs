@@ -39,7 +39,7 @@ impl Copier {
             .collect::<Vec<FileInfoParserAction>>();
 
         let mut counter = 0;
-        let mut total = ordered_creates.len() + ordered_deletes.len();
+        let total = ordered_creates.len() + ordered_deletes.len();
 
         for c in ordered_creates {
             match c.action_type {
