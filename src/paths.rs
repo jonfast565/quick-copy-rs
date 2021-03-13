@@ -376,7 +376,6 @@ impl FileInfoParserAction {
 
     pub fn get_destination_from_segment(&self, target_directory: &String) -> String {
         let mut pp = PathParser::new(target_directory);
-        let fif = FileInfoParser::new(target_directory, target_directory);
         let segment_string = self
             .source
             .clone()
@@ -385,9 +384,7 @@ impl FileInfoParserAction {
             .as_ref()
             .unwrap()
             .get_default_segment_string();
-        //dbg!(&segment_string);
         pp = pp.append_segment(&segment_string);
-        //dbg!(&pp);
         let destination_segment = pp.segment.unwrap().get_default_segment_string();
         destination_segment
     }
