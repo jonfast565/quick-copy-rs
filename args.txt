@@ -1,1 +1,1 @@
-cargo run -- -r Batch -s "C:\Users\jfast\OneDrive - American College of Cardiology\Desktop\Test1" -t "C:\Users\jfast\OneDrive - American College of Cardiology\Desktop\Test2" -c 3000 -k Services\Log
+cargo run -- -r Batch -s "C:\Users\jnfst\Desktop\Test1" -t "C:\Users\jnfst\Desktop\Test2" -c 3000 -k Services\Log

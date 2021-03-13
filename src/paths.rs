@@ -389,9 +389,6 @@ impl FileInfoParserAction {
         pp = pp.append_segment(&segment_string);
         //dbg!(&pp);
         let destination_segment = pp.segment.unwrap().get_default_segment_string();
-        if fif.is_unc_path {
-            return "\\\\".to_string() + &destination_segment;
-        }
         destination_segment
     }
 }

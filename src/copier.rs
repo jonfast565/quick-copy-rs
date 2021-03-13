@@ -38,6 +38,9 @@ impl Copier {
             .rev()
             .collect::<Vec<FileInfoParserAction>>();
 
+        let mut counter = 0;
+        let mut total = ordered_creates.len() + ordered_deletes.len();
+
         for c in ordered_creates {
             match c.action_type {
                 ActionType::Create => {
@@ -98,6 +101,8 @@ impl Copier {
                     info!("Nothing to do.");
                 }
             }
+            counter += 1;
+            info!("{} / {} operations performed ({}%).", counter, total, (counter / total) * 100);
         }
 
         for d in ordered_deletes {
@@ -126,6 +131,10 @@ impl Copier {
                     }
                 }
             }
+            counter += 1;
+            info!("{} / {} operations performed ({}%).", counter, total, (counter / total) * 100);
         }
+
+        info!("Copy operations completed");
     }
 }
