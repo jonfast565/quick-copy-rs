@@ -102,7 +102,12 @@ impl Copier {
                 }
             }
             counter += 1;
-            info!("{} / {} operations performed ({}%).", counter, total, (counter / total) * 100);
+            info!(
+                "{} / {} operations performed ({}%).",
+                counter,
+                total,
+                ((counter as f64 / total as f64) * 100 as f64).round() as i64
+            );
         }
 
         for d in ordered_deletes {
@@ -132,7 +137,12 @@ impl Copier {
                 }
             }
             counter += 1;
-            info!("{} / {} operations performed ({}%).", counter, total, (counter / total) * 100);
+            info!(
+                "{} / {} operations performed ({}%).",
+                counter,
+                total,
+                ((counter as f64 / total as f64) * 100 as f64).round() as i64
+            );
         }
 
         info!("Copy operations completed");
