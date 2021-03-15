@@ -1,8 +1,8 @@
 use crate::configuration::ProgramOptions;
-use crate::paths::{ActionType, FileInfoParserAction, PathParser, FileInfoParserActionList};
+use crate::paths::{ActionType, FileInfoParserAction, FileInfoParserActionList};
 
 use itertools::Itertools;
-use log::{info, warn};
+use log::{info};
 use std::cmp::Ordering;
 use std::fs;
 
@@ -18,12 +18,6 @@ impl Copier {
     pub fn incremental_copy(&self, action_list: Vec<FileInfoParserActionList>) {
         for action_item in action_list {
             let actions = action_item.actions;
-            let skip_folders = self
-                .program_options
-                .get_skip_folders()
-                .iter()
-                .map(|x| PathParser::new(x))
-                .collect::<Vec<PathParser>>();
 
             let ordered_creates = actions
                 .clone()
@@ -49,20 +43,8 @@ impl Copier {
                 match c.action_type {
                     ActionType::Create => {
                         let source = c.source.as_ref();
-                        // let source_dir = self.program_options.source_directory.clone();
                         let dest_dir = action_item.target_directory.clone();
                         let destination_segment = c.get_destination_from_segment(&dest_dir);
-                        for s in &skip_folders {
-                            let skip_segment = s.get_segment().get_default_segment_string();
-                            if source
-                                .unwrap()
-                                .get_segment()
-                                .contains_all_of_segment(&s.get_segment())
-                            {
-                                let source_path = &source.unwrap().get_path();
-                                warn!("Skipped {} because {} skipped.", source_path, skip_segment);
-                            }
-                        }
 
                         let src = source.unwrap().get_path();
                         let dst = destination_segment;
@@ -77,19 +59,6 @@ impl Copier {
                     }
                     ActionType::Update => {
                         let source = c.source.as_ref();
-
-                        for s in &skip_folders {
-                            let skip_segment = s.get_segment().get_default_segment_string();
-                            if source
-                                .unwrap()
-                                .get_segment()
-                                .contains_all_of_segment(&s.get_segment())
-                            {
-                                let source_path = source.unwrap().get_path();
-                                info!("Skipped {} because {} skipped.", source_path, skip_segment);
-                            }
-                        }
-
                         let src = source.unwrap().get_path();
                         let dst = c.destination.unwrap().get_path();
 
