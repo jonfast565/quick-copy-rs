@@ -1,9 +1,9 @@
-use crate::paths::FileInfoParserActionList;
 use crate::configuration::ProgramOptions;
 use crate::files;
 use crate::paths::ActionType;
 use crate::paths::FileInfoParser;
 use crate::paths::FileInfoParserAction;
+use crate::paths::FileInfoParserActionList;
 use crate::paths::PathParser;
 use log::{error, info, warn};
 use std::collections::HashMap;
@@ -35,7 +35,7 @@ impl ChangeDetector {
     pub fn three_way_merge(&self) -> Vec<FileInfoParserActionList> {
         info!("Merging...");
 
-        let mut results : Vec<FileInfoParserActionList> = Vec::new();
+        let mut results: Vec<FileInfoParserActionList> = Vec::new();
         let source_dir = self.program_options.get_source_directory();
         info!("Source directory is {}", &source_dir);
 
@@ -157,7 +157,9 @@ impl ChangeDetector {
             let mut second_paths = in_second_only
                 .clone()
                 .iter()
-                .map(|second| FileInfoParserAction::new_destination(second.clone(), ActionType::Delete))
+                .map(|second| {
+                    FileInfoParserAction::new_destination(second.clone(), ActionType::Delete)
+                })
                 .collect::<Vec<FileInfoParserAction>>();
             actions.append(&mut first_paths);
             actions.append(&mut second_paths);
@@ -172,7 +174,12 @@ impl ChangeDetector {
                     continue;
                 }
 
-                if first.metadata.len() != second.metadata.len() {
+                let first_modified = first.metadata.modified().unwrap();
+                let second_modified = second.metadata.modified().unwrap();
+                let first_len = first.metadata.len();
+                let second_len = second.metadata.len();
+
+                if first_len != second_len || first_modified != second_modified {
                     actions.push(FileInfoParserAction::new(first, second, ActionType::Update));
                     use_counter += 1;
                 } else {
@@ -180,14 +187,23 @@ impl ChangeDetector {
                 }
             }
 
-            info!("{} update actions on directories ignored.", directory_counter);
-            info!("{} update actions ignored based on file criteria.", ignore_counter);
-            info!("{} update actions used based on file criteria.", use_counter);
+            info!(
+                "{} update actions on directories ignored.",
+                directory_counter
+            );
+            info!(
+                "{} update actions ignored based on file criteria.",
+                ignore_counter
+            );
+            info!(
+                "{} update actions used based on file criteria.",
+                use_counter
+            );
             info!("{} total actions found.", &actions.len());
             results.push(FileInfoParserActionList {
                 actions: actions,
                 source_directory: source_dir.clone(),
-                target_directory: target_dir.clone()
+                target_directory: target_dir.clone(),
             })
         }
 
