@@ -243,7 +243,7 @@ impl ChangeDetector {
                 let skip_folder_segment = &skip_folder.get_segment();
                 if action_segment.contains_all_of_segment(skip_folder_segment) {
                     let source_path = &action_source.get_path();
-                    warn!("Skipped {} because {} skipped.", source_path, skip_segment);
+                    warn!("Skipped {} because path '{}' is skipped.", source_path, skip_segment);
                 } else {
                     actions_after_skipping.push(action.clone());
                 }
