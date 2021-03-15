@@ -165,18 +165,22 @@ impl ChangeDetector {
             info!("Enumerating possible update actions...");
             let mut ignore_counter = 0;
             let mut use_counter = 0;
+            let mut directory_counter = 0;
             for (first, second) in in_both {
                 if !first.is_file || !second.is_file {
-                    ignore_counter += 1;
+                    directory_counter += 1;
                     continue;
                 }
 
                 if first.metadata.len() != second.metadata.len() {
                     actions.push(FileInfoParserAction::new(first, second, ActionType::Update));
                     use_counter += 1;
+                } else {
+                    ignore_counter += 1;
                 }
             }
 
+            info!("{} update actions on directories ignored.", directory_counter);
             info!("{} update actions ignored based on file criteria.", ignore_counter);
             info!("{} update actions used based on file criteria.", use_counter);
             info!("{} total actions found.", &actions.len());
