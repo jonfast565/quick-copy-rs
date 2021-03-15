@@ -150,7 +150,7 @@ impl ProgramOptions {
         let target_directories: Vec<String> = if let Some(s) = app.values_of("target_directories") {
             s.map(|x| x.to_string()).collect()
         } else {
-            vec!()
+            vec![]
         };
         let check_time: u64 = if let Some(s) = app.value_of("check_time") {
             s.parse::<u64>().unwrap()
@@ -165,7 +165,7 @@ impl ProgramOptions {
         let skip_folders: Vec<String> = if let Some(s) = app.values_of("skip_folders") {
             s.map(|x| x.to_string()).collect()
         } else {
-            vec!()
+            vec![]
         };
 
         ProgramOptions {
