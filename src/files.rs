@@ -4,6 +4,7 @@ use std::{fs, io};
 
 use log::{debug, info};
 
+#[allow(dead_code)]
 pub fn enumerate_files(path: &str) -> io::Result<Vec<String>> {
     let mut entries = fs::read_dir(path)?
         .map(|res| res.map(|e| e.path()))

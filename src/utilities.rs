@@ -20,6 +20,7 @@ pub fn string_match_str(needle: &str, haystack: &str) -> bool {
     string_match(String::from(needle), String::from(haystack))
 }
 
+#[allow(dead_code)]
 pub fn char_match(needle: char, haystack: char) -> bool {
     let needle_lower = needle.to_lowercase().collect::<Vec<char>>();
     let haystack_lower = haystack.to_lowercase().collect::<Vec<char>>();

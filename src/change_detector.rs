@@ -19,7 +19,7 @@ impl ChangeDetector {
         ChangeDetector { program_options: o }
     }
 
-    #[warn()]
+    #[allow(dead_code)]
     pub fn changed(&self) -> bool {
         info!("Checking for changes...");
         let merge = self.three_way_merge();

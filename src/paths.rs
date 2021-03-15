@@ -214,6 +214,7 @@ impl PathParser {
         final_pp
     }
 
+    #[allow(dead_code)]
     fn get_last(&self) -> Option<PathSegment> {
         let initial_segment = self.segment.clone();
         let mut segment = initial_segment.clone();
@@ -235,6 +236,7 @@ impl PathParser {
         None
     }
 
+    #[allow(dead_code)]
     fn remove_last(&self) -> Option<PathSegment> {
         let initial_segment = self.segment.clone();
         let mut segment = initial_segment.clone();
@@ -366,10 +368,12 @@ impl FileInfoParserAction {
         }
     }
 
+    #[allow(dead_code)]
     pub fn get_source_length(&self) -> usize {
         self.source.clone().unwrap().path.len()
     }
 
+    #[allow(dead_code)]
     pub fn get_destination_length(&self) -> usize {
         self.destination.clone().unwrap().path.len()
     }
