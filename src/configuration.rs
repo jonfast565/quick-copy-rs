@@ -158,8 +158,8 @@ impl ProgramOptions {
         } else {
             "".to_string()
         };
-        let target_directories: Vec<String> = if let Some(s) = app.value_of("target_directories") {
-            s.to_string().split(",").map(|x| x.to_string()).collect::<Vec<String>>()
+        let target_directories: Vec<String> = if let Some(s) = app.values_of("target_directories") {
+            s.map(|x| x.to_string()).collect()
         } else {
             vec!()
         };
@@ -173,7 +173,11 @@ impl ProgramOptions {
             1 => true,
             _ => false,
         };
-        let skip_folders: Vec<String> = vec![];
+        let skip_folders: Vec<String> = if let Some(s) = app.values_of("skip_folders") {
+            s.map(|x| x.to_string()).collect()
+        } else {
+            vec!()
+        };
 
         ProgramOptions {
             runtime: runtime,
