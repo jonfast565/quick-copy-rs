@@ -65,7 +65,7 @@ impl FromStr for RuntimeType {
 pub struct ProgramOptions {
     pub runtime: RuntimeType,
     source_directory: String,
-    target_directory: String,
+    target_directories: Vec<String>,
     pub check_time: u64,
     pub enable_deletes: bool,
     pub skip_folders: Vec<String>,
@@ -89,6 +89,7 @@ impl ProgramOptions {
                     .takes_value(true)
                     .required(true),
             )
+            /*
             .arg(
                 Arg::with_name("target_directory")
                     .short("t")
@@ -97,6 +98,18 @@ impl ProgramOptions {
                     .help("Sets the target directory for the copy")
                     .takes_value(true)
                     .required(true),
+            )
+            */
+            .arg(
+                Arg::with_name("target_directories")
+                    .short("t")
+                    .long("target")
+                    .value_name("PATH LIST")
+                    .help("Sets the target directories for the copy")
+                    .takes_value(true)
+                    .multiple(true)
+                    .required(false)
+                    .value_delimiter(","),
             )
             .arg(
                 Arg::with_name("d")
@@ -145,10 +158,10 @@ impl ProgramOptions {
         } else {
             "".to_string()
         };
-        let target_directory: String = if let Some(s) = app.value_of("target_directory") {
-            s.to_string()
+        let target_directories: Vec<String> = if let Some(s) = app.value_of("target_directories") {
+            s.to_string().split(",").map(|x| x.to_string()).collect::<Vec<String>>()
         } else {
-            "".to_string()
+            vec!()
         };
         let check_time: u64 = if let Some(s) = app.value_of("check_time") {
             s.parse::<u64>().unwrap()
@@ -165,7 +178,7 @@ impl ProgramOptions {
         ProgramOptions {
             runtime: runtime,
             source_directory: source_directory,
-            target_directory: target_directory,
+            target_directories: target_directories,
             check_time: check_time,
             enable_deletes: enable_deletes,
             skip_folders: skip_folders,
@@ -177,8 +190,8 @@ impl ProgramOptions {
         self.source_directory.clone()
     }
 
-    pub fn get_target_directory(&self) -> String {
-        self.target_directory.clone()
+    pub fn get_target_directories(&self) -> Vec<String> {
+        self.target_directories.clone()
     }
 
     pub fn get_skip_folders(&self) -> Vec<String> {

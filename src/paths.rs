@@ -389,3 +389,9 @@ impl FileInfoParserAction {
         destination_segment
     }
 }
+
+pub struct FileInfoParserActionList {
+    pub source_directory: String,
+    pub target_directory: String,
+    pub actions: Vec<FileInfoParserAction>
+}
