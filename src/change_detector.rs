@@ -200,13 +200,53 @@ impl ChangeDetector {
                 use_counter
             );
             info!("{} total actions found.", &actions.len());
+            let actions_noskip = self.filter_skip_actions(actions);
             results.push(FileInfoParserActionList {
-                actions: actions,
+                actions: actions_noskip,
                 source_directory: source_dir.clone(),
                 target_directory: target_dir.clone(),
             })
         }
 
         results
+    }
+
+    fn filter_skip_actions(&self, actions: Vec<FileInfoParserAction>) -> Vec<FileInfoParserAction> {
+        let skip_folders = self
+            .program_options
+            .get_skip_folders()
+            .iter()
+            .map(|x| PathParser::new(x))
+            .collect::<Vec<PathParser>>();
+
+        let mut actions_after_skipping = Vec::<FileInfoParserAction>::new();
+        let mut delete_actions = actions
+            .iter()
+            .filter(|x| x.action_type == ActionType::Delete)
+            .map(|x| x.clone())
+            .collect::<Vec<FileInfoParserAction>>();
+        let non_delete_actions = actions
+            .iter()
+            .filter(|x| x.action_type != ActionType::Delete)
+            .map(|x| x.clone())
+            .collect::<Vec<FileInfoParserAction>>();
+
+        for action in non_delete_actions {
+            for skip_folder in &skip_folders {
+                let skip_segment = skip_folder.get_segment().get_default_segment_string();
+                let action_source = action.source.clone().unwrap();
+                let action_segment = action_source.get_segment();
+                let skip_folder_segment = &skip_folder.get_segment();
+                if action_segment.contains_all_of_segment(skip_folder_segment) {
+                    let source_path = &action_source.get_path();
+                    warn!("Skipped {} because {} skipped.", source_path, skip_segment);
+                } else {
+                    actions_after_skipping.push(action.clone());
+                }
+            }
+        }
+
+        actions_after_skipping.append(&mut delete_actions);
+        actions_after_skipping
     }
 }
