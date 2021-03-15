@@ -43,9 +43,6 @@ impl ChangeDetector {
             let source_pp = PathParser::new(&source_dir);
             let dest_pp = PathParser::new(&target_dir);
 
-            //dbg!(&source_pp);
-            //dbg!(&dest_pp);
-
             if source_pp.get_segment().identical(&dest_pp.get_segment()) {
                 error!(
                     "Source and destination paths are identical. 
