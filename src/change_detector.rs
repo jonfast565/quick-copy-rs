@@ -220,6 +220,10 @@ impl ChangeDetector {
             .collect::<Vec<PathParser>>();
 
         let mut actions_after_skipping = Vec::<FileInfoParserAction>::new();
+        if skip_folders.is_empty() {
+            return actions;
+        }
+
         let mut delete_actions = actions
             .iter()
             .filter(|x| x.action_type == ActionType::Delete)
