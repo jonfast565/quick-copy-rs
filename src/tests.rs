@@ -10,7 +10,9 @@ mod tests {
         let pp1 = PathParser::new(&String::from(path1));
         let pp2 = pp1.append_segment(&String::from(path2));
         let result = pp2.get_segment().get_default_segment_string();
-        let comparator = PathParser::new(&String::from(full_path)).get_segment().get_default_segment_string();
+        let comparator = PathParser::new(&String::from(full_path))
+            .get_segment()
+            .get_default_segment_string();
         assert_eq!(result, comparator);
     }
 }

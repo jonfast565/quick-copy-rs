@@ -393,5 +393,5 @@ impl FileInfoParserAction {
 pub struct FileInfoParserActionList {
     pub source_directory: String,
     pub target_directory: String,
-    pub actions: Vec<FileInfoParserAction>
+    pub actions: Vec<FileInfoParserAction>,
 }

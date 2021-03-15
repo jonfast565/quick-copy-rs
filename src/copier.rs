@@ -2,7 +2,7 @@ use crate::configuration::ProgramOptions;
 use crate::paths::{ActionType, FileInfoParserAction, FileInfoParserActionList};
 
 use itertools::Itertools;
-use log::{info};
+use log::info;
 use std::cmp::Ordering;
 use std::fs;
 
