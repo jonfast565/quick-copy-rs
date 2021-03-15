@@ -16,7 +16,7 @@
                     "kind": "bin"
                 }
             },
-            "args": ["-s", "C:\\Users\\jnfst\\Desktop\\Test1", "-t", "C:\\Users\\jnfst\\Desktop\\Test2,C:\\Users\\jnfst\\Desktop\\Test3"],
+            "args": ["-s", "C:\\Users\\jnfst\\Desktop\\Test1", "-t", "C:\\Users\\jnfst\\Desktop\\Test2" , "-t", "C:\\Users\\jnfst\\Desktop\\Test3"],
             "program": "${workspaceFolder}/target/debug/quick-copy",
             "cwd": "${workspaceFolder}/target/debug/",
             "sourceLanguages": [

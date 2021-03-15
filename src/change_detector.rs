@@ -37,9 +37,13 @@ impl ChangeDetector {
 
         let mut results : Vec<FileInfoParserActionList> = Vec::new();
         let source_dir = self.program_options.get_source_directory();
+        info!("Source directory is {}", &source_dir);
+
         let target_dirs = self.program_options.get_target_directories();
 
         for target_dir in target_dirs {
+            info!("Target directory is {}", target_dir);
+
             let source_pp = PathParser::new(&source_dir);
             let dest_pp = PathParser::new(&target_dir);
 
@@ -51,18 +55,22 @@ impl ChangeDetector {
                 continue;
             }
 
-            info!("Trying to get the source directory.");
+            info!("Trying to find the source directory...");
             let source_dir_path = Path::new(&source_dir);
             if !source_dir_path.exists() {
                 warn!("Source dir doesn't exist; creating it.");
                 fs::create_dir(source_dir_path).unwrap();
+            } else {
+                info!("Found.")
             }
 
-            info!("Trying to get the target directory.");
+            info!("Trying to find the target directory...");
             let target_dir_path = Path::new(&target_dir);
             if !target_dir_path.exists() {
                 warn!("Target dir doesn't exist; creating it.");
                 fs::create_dir(target_dir_path).unwrap();
+            } else {
+                info!("Found.")
             }
 
             info!("Enumerating the source directory...");
