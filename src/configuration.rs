@@ -89,17 +89,6 @@ impl ProgramOptions {
                     .takes_value(true)
                     .required(true),
             )
-            /*
-            .arg(
-                Arg::with_name("target_directory")
-                    .short("t")
-                    .long("target")
-                    .value_name("PATH")
-                    .help("Sets the target directory for the copy")
-                    .takes_value(true)
-                    .required(true),
-            )
-            */
             .arg(
                 Arg::with_name("target_directories")
                     .short("t")
