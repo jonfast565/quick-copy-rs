@@ -192,7 +192,7 @@ impl ChangeDetector {
                 directory_counter
             );
             info!(
-                "{} update actions ignored based on file criteria.",
+                "{} update actions ignored based on file change criteria.",
                 ignore_counter
             );
             info!(
