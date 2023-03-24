@@ -76,7 +76,7 @@ impl Display for RuntimeType {
 #[derive(Parser, Debug, Clone)]
 #[command(author, version, about, long_about)]
 pub struct ProgramOptions {
-    #[arg(short = 'r', long, value_name = "runtime-type", default_value_t = RuntimeType::Console)]
+    #[arg(short = 'r', long, value_name = "runtime-type", default_value_t = RuntimeType::Batch)]
     pub runtime: RuntimeType,
 
     #[arg(short = 's', long, value_name = "source-dir")]
@@ -85,7 +85,7 @@ pub struct ProgramOptions {
     #[arg(short = 't', long, value_name = "target-dirs")]
     target_directories: Vec<String>,
 
-    #[arg(short = 'c', long, value_name = "check-time")]
+    #[arg(short = 'c', long, value_name = "check-time", default_value_t=20000)]
     pub check_time: u64,
 
     #[arg(short = 'e', long, value_name = "enable-deletes")]
