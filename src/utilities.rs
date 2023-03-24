@@ -1,3 +1,5 @@
+use crate::paths::FileInfoParser;
+
 pub fn string_match(needle: String, haystack: String) -> bool {
     let needle_lower = needle.to_lowercase();
     let haystack_lower = haystack.to_lowercase();
@@ -30,4 +32,23 @@ pub fn char_match(needle: char, haystack: char) -> bool {
 
 pub fn path_is_unc(path: &String) -> bool {
     path.starts_with("\\\\")
+}
+
+pub fn match_list_or_all(item: &String, items: Vec<String>) -> bool {
+    if items.is_empty() {
+        return true;
+    }
+
+    items.contains(item)
+}
+
+pub fn match_finfo_parser_extension(finfo_parser: &FileInfoParser, extensions: Vec<String>) -> bool {
+    if !finfo_parser.is_file {
+        return true;
+    }
+    
+    match finfo_parser.extension.as_ref() {
+        Some(extension) => match_list_or_all(&extension, extensions),
+        None => false
+    }
 }

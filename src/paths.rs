@@ -5,6 +5,7 @@ use std::cmp::Ordering;
 use std::collections::VecDeque;
 use std::fs;
 use std::path::Path;
+use std::ffi::OsStr;
 
 use crate::utilities;
 
@@ -268,6 +269,8 @@ pub struct FileInfoParser {
     pub is_file: bool,
     pub is_unc_path: bool,
     pub path: String,
+    pub extension: Option<String>,
+    pub filename: Option<String>,
 }
 
 impl FileInfoParser {
@@ -275,17 +278,36 @@ impl FileInfoParser {
         let md = fs::metadata(&path).unwrap();
         let base_parser = PathParser::new(&base_directory);
         let path_buf = Path::new(&path);
+        let mut extension = path_buf.extension().and_then(OsStr::to_str).and_then(|x| Some(x.to_string()));
         let path_string = path_buf.as_os_str().to_str().unwrap().to_string();
         let sub_dir_parser = PathParser::new(&path_string);
         let seg = base_parser.get_differing_segment(sub_dir_parser);
-        //dbg!(&seg);
-        FileInfoParser {
+        let filename = path_buf.file_name().and_then(OsStr::to_str).and_then(|x| Some(x.to_string()));
+        
+        let new_filename = match filename {
+            Some(f) => {
+                if f.starts_with(".") { 
+                    let temp_extension = f.replace(".", "").to_string();
+                    extension = Some(temp_extension);
+                    None
+                } else {
+                    Some(f)
+                }
+            },
+            _ => None
+        };
+
+        let result = FileInfoParser {
             is_file: !md.is_dir(),
             metadata: md,
             segment: seg,
             is_unc_path: utilities::path_is_unc(base_directory),
             path: path.to_string(),
-        }
+            extension: extension,
+            filename: new_filename,
+        };
+        
+        result
     }
 
     pub fn get_path(&self) -> String {

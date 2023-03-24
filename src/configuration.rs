@@ -94,6 +94,9 @@ pub struct ProgramOptions {
     #[arg(short = 'k', long, value_name = "skip-folders")]
     pub skip_folders: Vec<String>,
 
+    #[arg(short = 'x', long, value_name = "extensions")]
+    pub extensions: Vec<String>,
+
     #[arg(short = 'f', long, value_name = "use-config-file")]
     pub use_config_file: bool,
 }

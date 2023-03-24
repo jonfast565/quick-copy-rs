@@ -5,6 +5,7 @@ use crate::paths::FileInfoParser;
 use crate::paths::FileInfoParserAction;
 use crate::paths::FileInfoParserActionList;
 use crate::paths::PathParser;
+use crate::utilities;
 use log::{error, info, warn};
 use std::collections::HashMap;
 use std::fs;
@@ -78,6 +79,7 @@ impl ChangeDetector {
             let results1 = files1
                 .iter()
                 .map(|x| FileInfoParser::new(x, &source_dir))
+                .filter(|x| utilities::match_finfo_parser_extension(x, self.program_options.extensions.clone()))
                 .collect::<Vec<FileInfoParser>>();
             info!("{} item(s) found in source.", &files1.len());
 
@@ -86,6 +88,7 @@ impl ChangeDetector {
             let results2 = files2
                 .iter()
                 .map(|x| FileInfoParser::new(x, &target_dir))
+                .filter(|x| utilities::match_finfo_parser_extension(x, self.program_options.extensions.clone()))
                 .collect::<Vec<FileInfoParser>>();
             info!("{} item(s) found in target.", &files2.len());
 
