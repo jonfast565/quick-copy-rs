@@ -1,7 +1,7 @@
-use clap::{Parser};
+use clap::{Parser, ValueEnum};
 
-use log::info;
 use std::env;
+use std::fmt::Display;
 use std::str::FromStr;
 
 const HEADER: &'static str = r"
@@ -42,7 +42,7 @@ pub fn get_header() -> String {
     )
 }
 
-#[derive(Clone)]
+#[derive(ValueEnum, Clone, Debug)]
 pub enum RuntimeType {
     Console,
     Service,
@@ -62,10 +62,21 @@ impl FromStr for RuntimeType {
     }
 }
 
-#[derive(Parser, Clone)]
+impl Display for RuntimeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let value = match *self {
+            RuntimeType::Console => "console",
+            RuntimeType::Service => "service",
+            RuntimeType::Batch => "batch",
+        };
+        write!(f, "{}", value)
+    }
+}
+
+#[derive(Parser, Debug, Clone)]
 #[command(author, version, about, long_about)]
 pub struct ProgramOptions {
-    #[arg(short = 'r', long, value_name = "runtime-type")]
+    #[arg(short = 'r', long, value_name = "runtime-type", default_value_t = RuntimeType::Console)]
     pub runtime: RuntimeType,
 
     #[arg(short = 's', long, value_name = "source-dir")]
