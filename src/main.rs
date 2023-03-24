@@ -1,11 +1,10 @@
-//#![allow(dead_code)]
-
 #[macro_use]
 extern crate clap;
 
 use chrono;
 use log::{error, info};
 use std::{thread, time};
+use clap::Parser;
 
 mod change_detector;
 mod configuration;
@@ -21,7 +20,9 @@ use copier::Copier;
 
 fn main() {
     setup_logger().unwrap();
-    let program_options = ProgramOptions::from_command_line_arguments();
+    info!("{}", configuration::get_header());
+
+    let program_options = ProgramOptions::parse();
     match &program_options.runtime {
         RuntimeType::Batch => run_batch_mode(program_options.clone()),
         RuntimeType::Console => run_console_mode(program_options.clone()),

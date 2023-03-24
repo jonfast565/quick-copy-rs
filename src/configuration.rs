@@ -1,4 +1,5 @@
-use clap::{App, Arg};
+use clap::{Parser};
+
 use log::info;
 use std::env;
 use std::str::FromStr;
@@ -61,124 +62,32 @@ impl FromStr for RuntimeType {
     }
 }
 
-#[derive(Clone)]
+#[derive(Parser, Clone)]
+#[command(author, version, about, long_about)]
 pub struct ProgramOptions {
+    #[arg(short = 'r', long, value_name = "runtime-type")]
     pub runtime: RuntimeType,
+
+    #[arg(short = 's', long, value_name = "source-dir")]
     source_directory: String,
+
+    #[arg(short = 't', long, value_name = "target-dirs")]
     target_directories: Vec<String>,
+
+    #[arg(short = 'c', long, value_name = "check-time")]
     pub check_time: u64,
+
+    #[arg(short = 'e', long, value_name = "enable-deletes")]
     pub enable_deletes: bool,
+
+    #[arg(short = 'k', long, value_name = "skip-folders")]
     pub skip_folders: Vec<String>,
+
+    #[arg(short = 'f', long, value_name = "use-config-file")]
     pub use_config_file: bool,
 }
 
 impl ProgramOptions {
-    pub fn from_command_line_arguments() -> ProgramOptions {
-        info!("{}", get_header());
-
-        let app = App::new(crate_name!())
-            .version(crate_version!())
-            .about(crate_description!())
-            .author(crate_authors!("\n"))
-            .arg(
-                Arg::with_name("source_directory")
-                    .short("s")
-                    .long("source")
-                    .value_name("PATH")
-                    .help("Sets the source directory for the copy")
-                    .takes_value(true)
-                    .required(true),
-            )
-            .arg(
-                Arg::with_name("target_directories")
-                    .short("t")
-                    .long("target")
-                    .value_name("PATH LIST")
-                    .help("Sets the target directories for the copy")
-                    .takes_value(true)
-                    .multiple(true)
-                    .required(false)
-                    .value_delimiter(","),
-            )
-            .arg(
-                Arg::with_name("d")
-                    .short("d")
-                    .multiple(false)
-                    .required(false)
-                    .help("Sets whether or not deletes will be enabled for the target directory"),
-            )
-            .arg(
-                Arg::with_name("skip_folders")
-                    .short("k")
-                    .long("skip")
-                    .value_name("PATH SEGMENT LIST")
-                    .help("Sets the list of paths to skip when copying to the target directory")
-                    .takes_value(true)
-                    .multiple(true)
-                    .required(false)
-                    .value_delimiter(","),
-            )
-            .arg(
-                Arg::with_name("runtime")
-                    .short("r")
-                    .long("runtime")
-                    .value_name("TYPE")
-                    .help("Sets the runtime mode")
-                    .takes_value(true)
-                    .default_value("Batch")
-                    .required(true)
-                    .possible_values(&["Console", "Batch"]),
-            )
-            .arg(
-                Arg::with_name("check_interval")
-                    .short("c")
-                    .long("check")
-                    .value_name("INTERVAL IN MS")
-                    .help("Sets the interval to check for changes (Console Mode) in ms")
-                    .default_value("3000")
-                    .required(false),
-            )
-            .get_matches();
-
-        let runtime: RuntimeType =
-            value_t!(app.value_of("runtime"), RuntimeType).unwrap_or_else(|e| e.exit());
-        let source_directory: String = if let Some(s) = app.value_of("source_directory") {
-            s.to_string()
-        } else {
-            "".to_string()
-        };
-        let target_directories: Vec<String> = if let Some(s) = app.values_of("target_directories") {
-            s.map(|x| x.to_string()).collect()
-        } else {
-            vec![]
-        };
-        let check_time: u64 = if let Some(s) = app.value_of("check_time") {
-            s.parse::<u64>().unwrap()
-        } else {
-            3000
-        };
-        let enable_deletes: bool = match app.occurrences_of("d") {
-            0 => false,
-            1 => true,
-            _ => false,
-        };
-        let skip_folders: Vec<String> = if let Some(s) = app.values_of("skip_folders") {
-            s.map(|x| x.to_string()).collect()
-        } else {
-            vec![]
-        };
-
-        ProgramOptions {
-            runtime: runtime,
-            source_directory: source_directory,
-            target_directories: target_directories,
-            check_time: check_time,
-            enable_deletes: enable_deletes,
-            skip_folders: skip_folders,
-            use_config_file: false,
-        }
-    }
-
     pub fn get_source_directory(&self) -> String {
         self.source_directory.clone()
     }
