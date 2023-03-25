@@ -1,6 +1,4 @@
 use crate::configuration::ProgramOptions;
-use crate::constants;
-use crate::files;
 use crate::paths::ActionType;
 use crate::paths::FileInfoParser;
 use crate::paths::FileInfoParserAction;
@@ -99,7 +97,7 @@ impl ChangeDetector {
 
     fn enumerate_directory(&self, source_dir: &String, dir_type: &str) -> Vec<FileInfoParser> {
         info!("Enumerating the {} directory...", dir_type);
-        let files1 = files::get_all_files(source_dir).unwrap();
+        let files1 = crate::files::get_all_files(source_dir).unwrap();
         let results1 = files1
             .iter()
             .map(|x| FileInfoParser::new(x, source_dir))

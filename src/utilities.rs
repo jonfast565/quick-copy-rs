@@ -1,4 +1,4 @@
-use crate::{paths::FileInfoParser, constants::{MEGABYTE4, MEGABYTE1, READ5192}};
+use crate::{paths::FileInfoParser, constants::{READ5192}};
 use std::{fs::File, io::Read};
 
 pub fn string_match(needle: String, haystack: String) -> bool {
@@ -61,7 +61,7 @@ pub fn match_finfo_parser_extension(
 
 pub fn read_file_incremental_action<F: FnMut(&[u8])>(file: &mut File, mut do_something: F) {
     let mut buffer = [0; READ5192];
-    let mut count = 0;
+    //let mut count = 0;
     while let Ok(n) = file.read(&mut buffer[..]) {
         if n != READ5192 {
             let rest = &buffer[0..n];
@@ -69,7 +69,7 @@ pub fn read_file_incremental_action<F: FnMut(&[u8])>(file: &mut File, mut do_som
             break;
         } else {
             do_something(&buffer);
-            count += n;
+            //count += n;
         }
     }
 }
