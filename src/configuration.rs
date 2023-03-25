@@ -76,7 +76,7 @@ impl Display for RuntimeType {
 #[derive(Parser, Debug, Clone)]
 #[command(author, version, about, long_about)]
 pub struct ProgramOptions {
-    #[arg(short = 'r', long, value_name = "runtime-type", default_value_t = RuntimeType::Batch)]
+    #[arg(long, value_name = "runtime-type", default_value_t = RuntimeType::Batch)]
     pub runtime: RuntimeType,
 
     #[arg(short = 's', long, value_name = "source-dir")]
@@ -85,20 +85,29 @@ pub struct ProgramOptions {
     #[arg(short = 't', long, value_name = "target-dirs")]
     target_directories: Vec<String>,
 
-    #[arg(short = 'c', long, value_name = "check-time", default_value_t=20000)]
+    #[arg(long, value_name = "check-time", default_value_t=20000)]
     pub check_time: u64,
 
     #[arg(short = 'e', long, value_name = "enable-deletes")]
     pub enable_deletes: bool,
 
-    #[arg(short = 'k', long, value_name = "skip-folders")]
+    #[arg(long, value_name = "skip-folders")]
     pub skip_folders: Vec<String>,
 
     #[arg(short = 'x', long, value_name = "extensions")]
     pub extensions: Vec<String>,
 
-    #[arg(short = 'f', long, value_name = "use-config-file")]
+    #[arg(long, value_name = "use-config-file")]
     pub use_config_file: bool,
+
+    #[arg(long, value_name = "compare-modified")]
+    pub update_compare_modified: bool,
+
+    #[arg(long, value_name = "compare-size")]
+    pub update_compare_size: bool,
+
+    #[arg(long, value_name = "compare-md5")]
+    pub update_compare_md5: bool,
 }
 
 impl ProgramOptions {

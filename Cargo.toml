@@ -12,3 +12,4 @@ log = "0.4"
 fern = "0.6"
 chrono = "0.4"
 clap = { version = "4.0", features = ["cargo", "derive"] }
+xxhash-rust = { version = "0.8.5", features = ["xxh3", "const_xxh3"] }

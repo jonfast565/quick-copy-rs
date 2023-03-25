@@ -6,6 +6,7 @@ use log::{error, info};
 use std::{thread, time};
 use clap::Parser;
 
+mod constants;
 mod change_detector;
 mod configuration;
 mod copier;
@@ -69,7 +70,7 @@ fn setup_logger() -> Result<(), fern::InitError> {
             out.finish(format_args!(
                 "{}[{}] {}",
                 chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
-                // record.target(),
+                //record.target(),
                 record.level(),
                 message
             ))

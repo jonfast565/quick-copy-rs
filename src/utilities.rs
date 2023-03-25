@@ -1,4 +1,5 @@
-use crate::paths::FileInfoParser;
+use crate::{paths::FileInfoParser, constants::{MEGABYTE4, MEGABYTE1, READ5192}};
+use std::{fs::File, io::Read};
 
 pub fn string_match(needle: String, haystack: String) -> bool {
     let needle_lower = needle.to_lowercase();
@@ -42,13 +43,33 @@ pub fn match_list_or_all(item: &String, items: Vec<String>) -> bool {
     items.contains(item)
 }
 
-pub fn match_finfo_parser_extension(finfo_parser: &FileInfoParser, extensions: Vec<String>) -> bool {
+
+// TODO: Move into FileInfoParser object
+pub fn match_finfo_parser_extension(
+    finfo_parser: &FileInfoParser,
+    extensions: Vec<String>,
+) -> bool {
     if !finfo_parser.is_file {
         return true;
     }
-    
+
     match finfo_parser.extension.as_ref() {
         Some(extension) => match_list_or_all(&extension, extensions),
-        None => false
+        None => false,
+    }
+}
+
+pub fn read_file_incremental_action<F: FnMut(&[u8])>(file: &mut File, mut do_something: F) {
+    let mut buffer = [0; READ5192];
+    let mut count = 0;
+    while let Ok(n) = file.read(&mut buffer[..]) {
+        if n != READ5192 {
+            let rest = &buffer[0..n];
+            do_something(rest);
+            break;
+        } else {
+            do_something(&buffer);
+            count += n;
+        }
     }
 }
