@@ -5,9 +5,6 @@ pub fn string_match(needle: String, haystack: String) -> bool {
     let needle_lower = needle.to_lowercase();
     let haystack_lower = haystack.to_lowercase();
 
-    //dbg!(&needle_lower);
-    //dbg!(&haystack_lower);
-
     if needle_lower.len() == 0 && haystack_lower.len() == 0 {
         return true;
     }
@@ -41,22 +38,6 @@ pub fn match_list_or_all(item: &String, items: Vec<String>) -> bool {
     }
 
     items.contains(item)
-}
-
-
-// TODO: Move into FileInfoParser object
-pub fn match_finfo_parser_extension(
-    finfo_parser: &FileInfoParser,
-    extensions: Vec<String>,
-) -> bool {
-    if !finfo_parser.is_file {
-        return true;
-    }
-
-    match finfo_parser.extension.as_ref() {
-        Some(extension) => match_list_or_all(&extension, extensions),
-        None => false,
-    }
 }
 
 pub fn read_file_incremental_action<F: FnMut(&[u8])>(file: &mut File, mut do_something: F) {

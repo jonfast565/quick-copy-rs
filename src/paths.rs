@@ -3,9 +3,9 @@ use itertools::Itertools;
 use log::debug;
 use std::cmp::Ordering;
 use std::collections::VecDeque;
+use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
-use std::ffi::OsStr;
 
 use crate::utilities;
 
@@ -278,23 +278,29 @@ impl FileInfoParser {
         let md = fs::metadata(&path).unwrap();
         let base_parser = PathParser::new(&base_directory);
         let path_buf = Path::new(&path);
-        let mut extension = path_buf.extension().and_then(OsStr::to_str).and_then(|x| Some(x.to_string()));
+        let mut extension = path_buf
+            .extension()
+            .and_then(OsStr::to_str)
+            .and_then(|x| Some(x.to_string()));
         let path_string = path_buf.as_os_str().to_str().unwrap().to_string();
         let sub_dir_parser = PathParser::new(&path_string);
         let seg = base_parser.get_differing_segment(sub_dir_parser);
-        let filename = path_buf.file_name().and_then(OsStr::to_str).and_then(|x| Some(x.to_string()));
-        
+        let filename = path_buf
+            .file_name()
+            .and_then(OsStr::to_str)
+            .and_then(|x| Some(x.to_string()));
+
         let new_filename = match filename {
             Some(f) => {
-                if f.starts_with(".") { 
+                if f.starts_with(".") {
                     let temp_extension = f.replace(".", "").to_string();
                     extension = Some(temp_extension);
                     None
                 } else {
                     Some(f)
                 }
-            },
-            _ => None
+            }
+            _ => None,
         };
 
         let result = FileInfoParser {
@@ -306,7 +312,7 @@ impl FileInfoParser {
             extension: extension,
             filename: new_filename,
         };
-        
+
         result
     }
 
@@ -317,6 +323,17 @@ impl FileInfoParser {
     pub fn get_segment(&self) -> Box<PathSegment> {
         let unwrapped_segment = self.segment.as_ref().unwrap();
         unwrapped_segment.clone()
+    }
+
+    pub fn match_extension(&self, extensions: Vec<String>) -> bool {
+        if !self.is_file {
+            return true;
+        }
+
+        match self.extension.as_ref() {
+            Some(extension) => utilities::match_list_or_all(&extension, extensions),
+            None => false,
+        }
     }
 }
 

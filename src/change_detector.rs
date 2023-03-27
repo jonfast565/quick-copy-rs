@@ -1,11 +1,6 @@
 use crate::configuration::ProgramOptions;
-use crate::paths::ActionType;
-use crate::paths::FileInfoParser;
-use crate::paths::FileInfoParserAction;
-use crate::paths::FileInfoParserActionList;
-use crate::paths::PathParser;
-use crate::utilities;
-use crate::utilities::read_file_incremental_action;
+use crate::paths::{ActionType, FileInfoParser, FileInfoParserAction, FileInfoParserActionList, PathParser};
+use crate::utilities::{read_file_incremental_action};
 use log::{error, info, warn};
 use std::collections::HashMap;
 use std::fs;
@@ -102,7 +97,7 @@ impl ChangeDetector {
             .iter()
             .map(|x| FileInfoParser::new(x, source_dir))
             .filter(|x| {
-                utilities::match_finfo_parser_extension(x, self.program_options.extensions.clone())
+                x.match_extension(self.program_options.extensions.clone())
             })
             .collect::<Vec<FileInfoParser>>();
         info!("{} item(s) found in {}.", &files1.len(), dir_type);
@@ -328,10 +323,8 @@ fn build_file_comparative_hash(file_info: &FileInfoParser) -> String {
     let mut f = std::fs::File::open(filename).expect("Unable to open file");
     read_file_incremental_action(&mut f, | result: &[u8] | {
         let h = xxh3_64(result);
-        //dbg!(&result);
         result_vec.push(h);
     });
     let s_result = result_vec.iter().map(|x| x.to_string()).collect::<Vec<String>>().join("");
-    //dbg!(&s_result);
     s_result
 }
