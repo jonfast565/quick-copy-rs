@@ -1,4 +1,4 @@
-use crate::{paths::FileInfoParser, constants::{READ5192}};
+use crate::constants::READ5192;
 use std::{fs::File, io::Read};
 
 pub fn string_match(needle: String, haystack: String) -> bool {
